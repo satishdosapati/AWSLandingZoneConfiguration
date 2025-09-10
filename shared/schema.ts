@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getFeaturePricing, getBasePricing } from "./pricing-loader";
 
 // Feature definition schema
 export const featureSchema = z.object({
@@ -48,8 +49,7 @@ export const availableFeatures: Feature[] = [
     description: "Basic account organization and management",
     category: "foundation",
     mandatory: true,
-    infraCostImpact: 0,
-    professionalServicesCostImpact: 0,
+    ...getFeaturePricing("aws-organizations"),
     availableInSizes: ["very-small", "small", "medium", "large"],
   },
   {
@@ -58,8 +58,7 @@ export const availableFeatures: Feature[] = [
     description: "Landing zone setup and governance with guardrails",
     category: "foundation",
     mandatory: false,
-    infraCostImpact: 50,
-    professionalServicesCostImpact: 5000,
+    ...getFeaturePricing("control-tower"),
     availableInSizes: ["small", "medium", "large"],
   },
   {
@@ -68,8 +67,7 @@ export const availableFeatures: Feature[] = [
     description: "Advanced Control Tower customizations and extensions",
     category: "foundation",
     mandatory: false,
-    infraCostImpact: 200,
-    professionalServicesCostImpact: 15000,
+    ...getFeaturePricing("control-tower-extensions"),
     availableInSizes: ["large"],
   },
   {
@@ -78,8 +76,7 @@ export const availableFeatures: Feature[] = [
     description: "Threat detection and security monitoring",
     category: "security",
     mandatory: false,
-    infraCostImpact: 100,
-    professionalServicesCostImpact: 2000,
+    ...getFeaturePricing("guardduty"),
     availableInSizes: ["very-small", "small", "medium", "large"],
   },
   {
@@ -88,8 +85,7 @@ export const availableFeatures: Feature[] = [
     description: "Centralized security findings and compliance dashboard",
     category: "security",
     mandatory: false,
-    infraCostImpact: 150,
-    professionalServicesCostImpact: 3000,
+    ...getFeaturePricing("security-hub"),
     availableInSizes: ["small", "medium", "large"],
   },
   {
@@ -98,8 +94,7 @@ export const availableFeatures: Feature[] = [
     description: "Automated security assessment for applications",
     category: "security",
     mandatory: false,
-    infraCostImpact: 75,
-    professionalServicesCostImpact: 1500,
+    ...getFeaturePricing("inspector"),
     availableInSizes: ["small", "medium", "large"],
   },
   {
@@ -108,8 +103,7 @@ export const availableFeatures: Feature[] = [
     description: "Managed network firewall service",
     category: "networking",
     mandatory: false,
-    infraCostImpact: 300,
-    professionalServicesCostImpact: 8000,
+    ...getFeaturePricing("network-firewall"),
     availableInSizes: ["medium", "large"],
   },
   {
@@ -118,8 +112,7 @@ export const availableFeatures: Feature[] = [
     description: "Network transit hub for VPC connectivity",
     category: "networking",
     mandatory: false,
-    infraCostImpact: 250,
-    professionalServicesCostImpact: 5000,
+    ...getFeaturePricing("transit-gateway"),
     availableInSizes: ["small", "medium", "large"],
   },
   {
@@ -128,8 +121,7 @@ export const availableFeatures: Feature[] = [
     description: "Dedicated network connection to AWS",
     category: "networking",
     mandatory: false,
-    infraCostImpact: 500,
-    professionalServicesCostImpact: 10000,
+    ...getFeaturePricing("direct-connect"),
     availableInSizes: ["medium", "large"],
   },
   {
@@ -138,8 +130,7 @@ export const availableFeatures: Feature[] = [
     description: "Operational data and automation across AWS resources",
     category: "automation",
     mandatory: false,
-    infraCostImpact: 50,
-    professionalServicesCostImpact: 3000,
+    ...getFeaturePricing("systems-manager"),
     availableInSizes: ["small", "medium", "large"],
   },
   {
@@ -148,8 +139,7 @@ export const availableFeatures: Feature[] = [
     description: "Deploy CloudFormation stacks across multiple accounts",
     category: "automation",
     mandatory: false,
-    infraCostImpact: 25,
-    professionalServicesCostImpact: 4000,
+    ...getFeaturePricing("cloudformation-stacksets"),
     availableInSizes: ["medium", "large"],
   },
   {
@@ -158,8 +148,7 @@ export const availableFeatures: Feature[] = [
     description: "Automated account provisioning with Terraform",
     category: "automation",
     mandatory: false,
-    infraCostImpact: 100,
-    professionalServicesCostImpact: 20000,
+    ...getFeaturePricing("account-factory-terraform"),
     availableInSizes: ["large"],
   },
   {
@@ -168,8 +157,7 @@ export const availableFeatures: Feature[] = [
     description: "Advanced monitoring, dashboards, and alerting",
     category: "monitoring",
     mandatory: false,
-    infraCostImpact: 200,
-    professionalServicesCostImpact: 4000,
+    ...getFeaturePricing("cloudwatch-enhanced"),
     availableInSizes: ["medium", "large"],
   },
   {
@@ -178,8 +166,7 @@ export const availableFeatures: Feature[] = [
     description: "Centralized audit logging across all accounts",
     category: "monitoring",
     mandatory: true,
-    infraCostImpact: 100,
-    professionalServicesCostImpact: 2000,
+    ...getFeaturePricing("cloudtrail-organization"),
     availableInSizes: ["small", "medium", "large"],
   },
   {
@@ -188,8 +175,7 @@ export const availableFeatures: Feature[] = [
     description: "Advanced log analytics and search capabilities",
     category: "monitoring",
     mandatory: false,
-    infraCostImpact: 400,
-    professionalServicesCostImpact: 8000,
+    ...getFeaturePricing("elasticsearch-logging"),
     availableInSizes: ["large"],
   },
 ];
@@ -204,10 +190,7 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     organizationalStructure: "Minimal AWS Organizations structure with Root and Workloads OU",
     defaultVMs: 2,
     defaultStorageTB: 1,
-    baseInfraCostPerMonth: 300,
-    baseProfessionalServicesCost: 10000,
-    managedServicesCostPerEC2: 150,
-    managedServicesCostPerTBStorage: 100,
+    ...getBasePricing("very-small")!,
     availableFeatures: ["aws-organizations", "guardduty"],
     mandatoryFeatures: ["aws-organizations"],
   },
@@ -219,10 +202,7 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     organizationalStructure: "Basic AWS Organizations structure with Root, Core OU (Log, Audit), and Workloads OU",
     defaultVMs: 8,
     defaultStorageTB: 5,
-    baseInfraCostPerMonth: 1200,
-    baseProfessionalServicesCost: 25000,
-    managedServicesCostPerEC2: 180,
-    managedServicesCostPerTBStorage: 120,
+    ...getBasePricing("small")!,
     availableFeatures: ["aws-organizations", "control-tower", "guardduty", "security-hub", "inspector", "transit-gateway", "systems-manager", "cloudtrail-organization"],
     mandatoryFeatures: ["aws-organizations", "cloudtrail-organization"],
   },
@@ -234,10 +214,7 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     organizationalStructure: "More complex OU structure with Root, Core OU (Log, Audit, Shared Services), Prod OU, Non-Prod OU, Sandbox OU",
     defaultVMs: 25,
     defaultStorageTB: 15,
-    baseInfraCostPerMonth: 5000,
-    baseProfessionalServicesCost: 50000,
-    managedServicesCostPerEC2: 200,
-    managedServicesCostPerTBStorage: 140,
+    ...getBasePricing("medium")!,
     availableFeatures: ["aws-organizations", "control-tower", "guardduty", "security-hub", "inspector", "network-firewall", "transit-gateway", "direct-connect", "systems-manager", "cloudformation-stacksets", "cloudwatch-enhanced", "cloudtrail-organization"],
     mandatoryFeatures: ["aws-organizations", "cloudtrail-organization"],
   },
@@ -249,10 +226,7 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     organizationalStructure: "Comprehensive OU structure with Root, Infrastructure OU (Core, Network, Security), Prod OU (by business unit), Non-Prod OU (by business unit), Sandbox OU, Suspended OU",
     defaultVMs: 100,
     defaultStorageTB: 50,
-    baseInfraCostPerMonth: 15000,
-    baseProfessionalServicesCost: 100000,
-    managedServicesCostPerEC2: 250,
-    managedServicesCostPerTBStorage: 160,
+    ...getBasePricing("large")!,
     availableFeatures: ["aws-organizations", "control-tower", "control-tower-extensions", "guardduty", "security-hub", "inspector", "network-firewall", "transit-gateway", "direct-connect", "systems-manager", "cloudformation-stacksets", "account-factory-terraform", "cloudwatch-enhanced", "cloudtrail-organization", "elasticsearch-logging"],
     mandatoryFeatures: ["aws-organizations", "cloudtrail-organization"],
   },

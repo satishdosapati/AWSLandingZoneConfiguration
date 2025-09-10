@@ -1,0 +1,105 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-01-10",
+  "currency": "USD",
+  "description": "AWS Landing Zone Pricing Configuration - Update this file to modify all pricing across the application",
+  
+  "basePricing": {
+    "very-small": {
+      "baseInfraCostPerMonth": 300,
+      "baseProfessionalServicesCost": 10000,
+      "managedServicesCostPerEC2": 150,
+      "managedServicesCostPerTBStorage": 100
+    },
+    "small": {
+      "baseInfraCostPerMonth": 1200,
+      "baseProfessionalServicesCost": 25000,
+      "managedServicesCostPerEC2": 180,
+      "managedServicesCostPerTBStorage": 120
+    },
+    "medium": {
+      "baseInfraCostPerMonth": 5000,
+      "baseProfessionalServicesCost": 50000,
+      "managedServicesCostPerEC2": 200,
+      "managedServicesCostPerTBStorage": 140
+    },
+    "large": {
+      "baseInfraCostPerMonth": 15000,
+      "baseProfessionalServicesCost": 100000,
+      "managedServicesCostPerEC2": 250,
+      "managedServicesCostPerTBStorage": 160
+    }
+  },
+
+  "featurePricing": {
+    "aws-organizations": {
+      "infraCostImpact": 0,
+      "professionalServicesCostImpact": 0
+    },
+    "control-tower": {
+      "infraCostImpact": 50,
+      "professionalServicesCostImpact": 5000
+    },
+    "control-tower-extensions": {
+      "infraCostImpact": 200,
+      "professionalServicesCostImpact": 15000
+    },
+    "guardduty": {
+      "infraCostImpact": 100,
+      "professionalServicesCostImpact": 2000
+    },
+    "security-hub": {
+      "infraCostImpact": 150,
+      "professionalServicesCostImpact": 3000
+    },
+    "inspector": {
+      "infraCostImpact": 75,
+      "professionalServicesCostImpact": 1500
+    },
+    "network-firewall": {
+      "infraCostImpact": 300,
+      "professionalServicesCostImpact": 8000
+    },
+    "transit-gateway": {
+      "infraCostImpact": 250,
+      "professionalServicesCostImpact": 5000
+    },
+    "direct-connect": {
+      "infraCostImpact": 500,
+      "professionalServicesCostImpact": 10000
+    },
+    "systems-manager": {
+      "infraCostImpact": 50,
+      "professionalServicesCostImpact": 3000
+    },
+    "cloudformation-stacksets": {
+      "infraCostImpact": 25,
+      "professionalServicesCostImpact": 4000
+    },
+    "account-factory-terraform": {
+      "infraCostImpact": 100,
+      "professionalServicesCostImpact": 20000
+    },
+    "cloudwatch-enhanced": {
+      "infraCostImpact": 200,
+      "professionalServicesCostImpact": 4000
+    },
+    "cloudtrail-organization": {
+      "infraCostImpact": 100,
+      "professionalServicesCostImpact": 2000
+    },
+    "elasticsearch-logging": {
+      "infraCostImpact": 400,
+      "professionalServicesCostImpact": 8000
+    }
+  },
+
+  "pricingNotes": {
+    "infraCostImpact": "Additional monthly infrastructure cost in USD",
+    "professionalServicesCostImpact": "One-time professional services cost in USD",
+    "managedServicesCostPerEC2": "Monthly cost per EC2 instance managed",
+    "managedServicesCostPerTBStorage": "Monthly cost per TB of storage managed",
+    "basePricing": "Base costs include essential AWS services and basic setup",
+    "featurePricing": "Additional costs for optional features on top of base pricing"
+  }
+}
