@@ -1,0 +1,41 @@
+Build a web app that creates an intake form for AWS Landing Zone configurations.  
+Use the attached PDF ("AWS Landing Zone Comparison Table Including Very Small Customers") as the source for the configuration options and their details.
+
+Requirements:
+
+1. Intake Form
+   - Present the different landing zone options from the PDF (Very Small, Small, Medium, Large).
+   - Each option should be selectable (radio buttons or dropdown).
+   - Show a short description of the key components/features from the PDF when an option is selected.
+
+2. Cost Model
+   - For each configuration, assign default assumptions for:
+     * Infra cost per month
+     * Professional services cost (one-time)
+     * Managed services cost (per VM + per TB of storage)
+     * Default number of VMs and storage, based on customer size
+   - Formula:
+     Managed Services Monthly = (default VMs × cost/VM) + (default TB × cost/TB)
+     Total Monthly Estimate = Infra cost + Managed Services Monthly
+   - Show all costs in a results section after selection.
+
+3. Results Display
+   - When a partner selects a configuration, display:
+     * Monthly Infrastructure Cost
+     * One-time Professional Services Cost
+     * Monthly Managed Services Cost
+     * Total Estimated Monthly Cost
+   - Display results in a clean card layout.
+
+4. UI/UX
+   - Clean, simple web form with Tailwind or similar styling.
+   - Use cards or panels for the results.
+   - Optionally allow partner to adjust VM count and storage to see updated costs.
+   - Include a button to export results to PDF/CSV.
+
+5. Tech Stack
+   - Use React with Tailwind CSS (or plain HTML/CSS/JavaScript if easier).
+   - Make the configuration table data (from the PDF) hardcoded in JSON inside the app for now.
+
+Goal:
+A working prototype where a partner can select a landing zone configuration, and the app instantly calculates and displays infra costs, professional services costs, and managed services costs based on the defaults derived from the PDF.
