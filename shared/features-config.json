@@ -1,0 +1,172 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-09-10",
+  "description": "AWS Landing Zone features configuration - allows adding/removing features per configuration size",
+  "features": [
+    {
+      "id": "aws-organizations",
+      "name": "AWS Organizations",
+      "description": "Basic account organization and management",
+      "category": "foundation",
+      "mandatory": true,
+      "availableInSizes": ["very-small", "small", "medium", "large"]
+    },
+    {
+      "id": "control-tower",
+      "name": "AWS Control Tower", 
+      "description": "Landing zone setup and governance with guardrails",
+      "category": "foundation",
+      "mandatory": false,
+      "availableInSizes": ["small", "medium", "large"]
+    },
+    {
+      "id": "control-tower-extensions",
+      "name": "Control Tower Custom Extensions",
+      "description": "Advanced Control Tower customizations and extensions", 
+      "category": "foundation",
+      "mandatory": false,
+      "availableInSizes": ["large"]
+    },
+    {
+      "id": "guardduty",
+      "name": "Amazon GuardDuty",
+      "description": "Threat detection and security monitoring",
+      "category": "security", 
+      "mandatory": false,
+      "availableInSizes": ["very-small", "small", "medium", "large"]
+    },
+    {
+      "id": "security-hub",
+      "name": "AWS Security Hub",
+      "description": "Centralized security findings and compliance dashboard",
+      "category": "security",
+      "mandatory": false,
+      "availableInSizes": ["small", "medium", "large"]
+    },
+    {
+      "id": "inspector",
+      "name": "Amazon Inspector", 
+      "description": "Automated security assessment for applications",
+      "category": "security",
+      "mandatory": false,
+      "availableInSizes": ["small", "medium", "large"]
+    },
+    {
+      "id": "network-firewall",
+      "name": "AWS Network Firewall",
+      "description": "Managed network firewall service",
+      "category": "networking",
+      "mandatory": false,
+      "availableInSizes": ["medium", "large"]
+    },
+    {
+      "id": "transit-gateway",
+      "name": "AWS Transit Gateway", 
+      "description": "Network transit hub for VPC connectivity",
+      "category": "networking",
+      "mandatory": false,
+      "availableInSizes": ["small", "medium", "large"]
+    },
+    {
+      "id": "direct-connect",
+      "name": "AWS Direct Connect",
+      "description": "Dedicated network connection to AWS",
+      "category": "networking",
+      "mandatory": false,
+      "availableInSizes": ["medium", "large"]
+    },
+    {
+      "id": "systems-manager", 
+      "name": "AWS Systems Manager",
+      "description": "Operational data and automation across AWS resources",
+      "category": "automation",
+      "mandatory": false,
+      "availableInSizes": ["small", "medium", "large"]
+    },
+    {
+      "id": "cloudformation-stacksets",
+      "name": "CloudFormation StackSets",
+      "description": "Deploy CloudFormation stacks across multiple accounts",
+      "category": "automation",
+      "mandatory": false,
+      "availableInSizes": ["medium", "large"]
+    },
+    {
+      "id": "account-factory-terraform",
+      "name": "Account Factory for Terraform (AFT)",
+      "description": "Automated account provisioning with Terraform", 
+      "category": "automation",
+      "mandatory": false,
+      "availableInSizes": ["large"]
+    },
+    {
+      "id": "cloudwatch-enhanced",
+      "name": "Enhanced CloudWatch Monitoring",
+      "description": "Advanced monitoring, dashboards, and alerting",
+      "category": "monitoring",
+      "mandatory": false,
+      "availableInSizes": ["medium", "large"]
+    },
+    {
+      "id": "cloudtrail-organization",
+      "name": "Organization-wide CloudTrail",
+      "description": "Centralized audit logging across all accounts",
+      "category": "monitoring", 
+      "mandatory": true,
+      "availableInSizes": ["small", "medium", "large"]
+    },
+    {
+      "id": "elasticsearch-logging",
+      "name": "Elasticsearch Service for Logging",
+      "description": "Advanced log analytics and search capabilities",
+      "category": "monitoring",
+      "mandatory": false,
+      "availableInSizes": ["large"]
+    }
+  ],
+  "configurationFeatures": {
+    "very-small": {
+      "availableFeatures": ["aws-organizations", "guardduty"],
+      "mandatoryFeatures": ["aws-organizations"]
+    },
+    "small": {
+      "availableFeatures": ["aws-organizations", "control-tower", "guardduty", "security-hub", "inspector", "transit-gateway", "systems-manager", "cloudtrail-organization"],
+      "mandatoryFeatures": ["aws-organizations", "cloudtrail-organization"]
+    },
+    "medium": {
+      "availableFeatures": ["aws-organizations", "control-tower", "guardduty", "security-hub", "inspector", "network-firewall", "transit-gateway", "direct-connect", "systems-manager", "cloudformation-stacksets", "cloudwatch-enhanced", "cloudtrail-organization"],
+      "mandatoryFeatures": ["aws-organizations", "cloudtrail-organization"]
+    },
+    "large": {
+      "availableFeatures": ["aws-organizations", "control-tower", "control-tower-extensions", "guardduty", "security-hub", "inspector", "network-firewall", "transit-gateway", "direct-connect", "systems-manager", "cloudformation-stacksets", "account-factory-terraform", "cloudwatch-enhanced", "cloudtrail-organization", "elasticsearch-logging"],
+      "mandatoryFeatures": ["aws-organizations", "cloudtrail-organization"]
+    }
+  },
+  "categories": [
+    {
+      "id": "foundation",
+      "name": "Foundation",
+      "description": "Core AWS account and organizational setup services"
+    },
+    {
+      "id": "security", 
+      "name": "Security",
+      "description": "Security monitoring, compliance, and threat detection services"
+    },
+    {
+      "id": "networking",
+      "name": "Networking", 
+      "description": "Network connectivity and infrastructure services"
+    },
+    {
+      "id": "automation",
+      "name": "Automation",
+      "description": "Infrastructure automation and deployment services"
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring",
+      "description": "Logging, monitoring, and observability services"
+    }
+  ]
+}

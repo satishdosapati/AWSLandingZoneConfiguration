@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getFeaturePricing, getBasePricing } from "./pricing-loader";
+import { getAllFeatures, getAvailableFeatureIds, getMandatoryFeatureIds } from "./features-loader";
 
 // Feature definition schema
 export const featureSchema = z.object({
@@ -41,144 +42,8 @@ export type Feature = z.infer<typeof featureSchema>;
 export type LandingZoneConfig = z.infer<typeof landingZoneConfigSchema>;
 export type CostCalculation = z.infer<typeof costCalculationSchema>;
 
-// Feature definitions
-export const availableFeatures: Feature[] = [
-  {
-    id: "aws-organizations",
-    name: "AWS Organizations",
-    description: "Basic account organization and management",
-    category: "foundation",
-    mandatory: true,
-    ...getFeaturePricing("aws-organizations"),
-    availableInSizes: ["very-small", "small", "medium", "large"],
-  },
-  {
-    id: "control-tower",
-    name: "AWS Control Tower",
-    description: "Landing zone setup and governance with guardrails",
-    category: "foundation",
-    mandatory: false,
-    ...getFeaturePricing("control-tower"),
-    availableInSizes: ["small", "medium", "large"],
-  },
-  {
-    id: "control-tower-extensions",
-    name: "Control Tower Custom Extensions",
-    description: "Advanced Control Tower customizations and extensions",
-    category: "foundation",
-    mandatory: false,
-    ...getFeaturePricing("control-tower-extensions"),
-    availableInSizes: ["large"],
-  },
-  {
-    id: "guardduty",
-    name: "Amazon GuardDuty",
-    description: "Threat detection and security monitoring",
-    category: "security",
-    mandatory: false,
-    ...getFeaturePricing("guardduty"),
-    availableInSizes: ["very-small", "small", "medium", "large"],
-  },
-  {
-    id: "security-hub",
-    name: "AWS Security Hub",
-    description: "Centralized security findings and compliance dashboard",
-    category: "security",
-    mandatory: false,
-    ...getFeaturePricing("security-hub"),
-    availableInSizes: ["small", "medium", "large"],
-  },
-  {
-    id: "inspector",
-    name: "Amazon Inspector",
-    description: "Automated security assessment for applications",
-    category: "security",
-    mandatory: false,
-    ...getFeaturePricing("inspector"),
-    availableInSizes: ["small", "medium", "large"],
-  },
-  {
-    id: "network-firewall",
-    name: "AWS Network Firewall",
-    description: "Managed network firewall service",
-    category: "networking",
-    mandatory: false,
-    ...getFeaturePricing("network-firewall"),
-    availableInSizes: ["medium", "large"],
-  },
-  {
-    id: "transit-gateway",
-    name: "AWS Transit Gateway",
-    description: "Network transit hub for VPC connectivity",
-    category: "networking",
-    mandatory: false,
-    ...getFeaturePricing("transit-gateway"),
-    availableInSizes: ["small", "medium", "large"],
-  },
-  {
-    id: "direct-connect",
-    name: "AWS Direct Connect",
-    description: "Dedicated network connection to AWS",
-    category: "networking",
-    mandatory: false,
-    ...getFeaturePricing("direct-connect"),
-    availableInSizes: ["medium", "large"],
-  },
-  {
-    id: "systems-manager",
-    name: "AWS Systems Manager",
-    description: "Operational data and automation across AWS resources",
-    category: "automation",
-    mandatory: false,
-    ...getFeaturePricing("systems-manager"),
-    availableInSizes: ["small", "medium", "large"],
-  },
-  {
-    id: "cloudformation-stacksets",
-    name: "CloudFormation StackSets",
-    description: "Deploy CloudFormation stacks across multiple accounts",
-    category: "automation",
-    mandatory: false,
-    ...getFeaturePricing("cloudformation-stacksets"),
-    availableInSizes: ["medium", "large"],
-  },
-  {
-    id: "account-factory-terraform",
-    name: "Account Factory for Terraform (AFT)",
-    description: "Automated account provisioning with Terraform",
-    category: "automation",
-    mandatory: false,
-    ...getFeaturePricing("account-factory-terraform"),
-    availableInSizes: ["large"],
-  },
-  {
-    id: "cloudwatch-enhanced",
-    name: "Enhanced CloudWatch Monitoring",
-    description: "Advanced monitoring, dashboards, and alerting",
-    category: "monitoring",
-    mandatory: false,
-    ...getFeaturePricing("cloudwatch-enhanced"),
-    availableInSizes: ["medium", "large"],
-  },
-  {
-    id: "cloudtrail-organization",
-    name: "Organization-wide CloudTrail",
-    description: "Centralized audit logging across all accounts",
-    category: "monitoring",
-    mandatory: true,
-    ...getFeaturePricing("cloudtrail-organization"),
-    availableInSizes: ["small", "medium", "large"],
-  },
-  {
-    id: "elasticsearch-logging",
-    name: "Elasticsearch Service for Logging",
-    description: "Advanced log analytics and search capabilities",
-    category: "monitoring",
-    mandatory: false,
-    ...getFeaturePricing("elasticsearch-logging"),
-    availableInSizes: ["large"],
-  },
-];
+// Load features from external configuration
+export const availableFeatures: Feature[] = getAllFeatures();
 
 // AWS Landing Zone configurations data
 export const landingZoneConfigurations: LandingZoneConfig[] = [
@@ -191,8 +56,8 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     defaultVMs: 2,
     defaultStorageTB: 1,
     ...getBasePricing("very-small")!,
-    availableFeatures: ["aws-organizations", "guardduty"],
-    mandatoryFeatures: ["aws-organizations"],
+    availableFeatures: getAvailableFeatureIds("very-small"),
+    mandatoryFeatures: getMandatoryFeatureIds("very-small"),
   },
   {
     size: "small",
@@ -203,8 +68,8 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     defaultVMs: 8,
     defaultStorageTB: 5,
     ...getBasePricing("small")!,
-    availableFeatures: ["aws-organizations", "control-tower", "guardduty", "security-hub", "inspector", "transit-gateway", "systems-manager", "cloudtrail-organization"],
-    mandatoryFeatures: ["aws-organizations", "cloudtrail-organization"],
+    availableFeatures: getAvailableFeatureIds("small"),
+    mandatoryFeatures: getMandatoryFeatureIds("small"),
   },
   {
     size: "medium",
@@ -215,8 +80,8 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     defaultVMs: 25,
     defaultStorageTB: 15,
     ...getBasePricing("medium")!,
-    availableFeatures: ["aws-organizations", "control-tower", "guardduty", "security-hub", "inspector", "network-firewall", "transit-gateway", "direct-connect", "systems-manager", "cloudformation-stacksets", "cloudwatch-enhanced", "cloudtrail-organization"],
-    mandatoryFeatures: ["aws-organizations", "cloudtrail-organization"],
+    availableFeatures: getAvailableFeatureIds("medium"),
+    mandatoryFeatures: getMandatoryFeatureIds("medium"),
   },
   {
     size: "large",
@@ -227,7 +92,7 @@ export const landingZoneConfigurations: LandingZoneConfig[] = [
     defaultVMs: 100,
     defaultStorageTB: 50,
     ...getBasePricing("large")!,
-    availableFeatures: ["aws-organizations", "control-tower", "control-tower-extensions", "guardduty", "security-hub", "inspector", "network-firewall", "transit-gateway", "direct-connect", "systems-manager", "cloudformation-stacksets", "account-factory-terraform", "cloudwatch-enhanced", "cloudtrail-organization", "elasticsearch-logging"],
-    mandatoryFeatures: ["aws-organizations", "cloudtrail-organization"],
+    availableFeatures: getAvailableFeatureIds("large"),
+    mandatoryFeatures: getMandatoryFeatureIds("large"),
   },
 ];
