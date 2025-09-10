@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ConfigurationCard from "./ConfigurationCard";
 import CostCalculator from "./CostCalculator";
 import ConfigurationDetails from "./ConfigurationDetails";
+import FeatureSelector from "./FeatureSelector";
 import { landingZoneConfigurations, LandingZoneConfig } from "@shared/schema";
 import { CheckCircle, Settings, FileText } from "lucide-react";
 
@@ -29,6 +30,16 @@ export default function LandingZoneIntakeForm() {
       // Set mandatory features as selected by default
       setSelectedFeatures(config.mandatoryFeatures);
     }
+  };
+
+  const handleFeatureToggle = (featureId: string, enabled: boolean) => {
+    setSelectedFeatures(prev => {
+      if (enabled) {
+        return [...prev, featureId];
+      } else {
+        return prev.filter(id => id !== featureId);
+      }
+    });
   };
 
   const handleExportPDF = () => {
@@ -137,6 +148,17 @@ export default function LandingZoneIntakeForm() {
                     <ConfigurationDetails config={selectedConfiguration} />
                   </TabsContent>
                 </Tabs>
+              )}
+
+              {/* Feature Selection */}
+              {selectedConfiguration && (
+                <div className="mt-6">
+                  <FeatureSelector
+                    selectedConfig={selectedConfiguration}
+                    selectedFeatures={selectedFeatures}
+                    onFeatureToggle={handleFeatureToggle}
+                  />
+                </div>
               )}
             </div>
 
