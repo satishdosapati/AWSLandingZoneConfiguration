@@ -11,7 +11,8 @@ import { CheckCircle, Settings, FileText } from "lucide-react";
 
 export default function LandingZoneIntakeForm() {
   const [selectedConfig, setSelectedConfig] = useState<string>("");
-  const [customVMs, setCustomVMs] = useState<number>(0);
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [customEC2Count, setCustomEC2Count] = useState<number>(0);
   const [customStorageTB, setCustomStorageTB] = useState<number>(0);
 
   const selectedConfiguration = landingZoneConfigurations.find(
@@ -23,8 +24,10 @@ export default function LandingZoneIntakeForm() {
     setSelectedConfig(value);
     const config = landingZoneConfigurations.find(c => c.size === value);
     if (config) {
-      setCustomVMs(config.defaultVMs);
+      setCustomEC2Count(config.defaultVMs);
       setCustomStorageTB(config.defaultStorageTB);
+      // Set mandatory features as selected by default
+      setSelectedFeatures(config.mandatoryFeatures);
     }
   };
 
@@ -42,7 +45,8 @@ export default function LandingZoneIntakeForm() {
     if (selectedConfiguration) {
       console.log('Form submitted with:', {
         config: selectedConfiguration,
-        customVMs,
+        selectedFeatures,
+        customEC2Count,
         customStorageTB
       });
       // TODO: Implement form submission logic
@@ -140,9 +144,10 @@ export default function LandingZoneIntakeForm() {
             <div className="lg:col-span-1">
               <CostCalculator
                 selectedConfig={selectedConfiguration || null}
-                customVMs={customVMs}
+                selectedFeatures={selectedFeatures}
+                customEC2Count={customEC2Count}
                 customStorageTB={customStorageTB}
-                onVMsChange={(value) => setCustomVMs(value[0])}
+                onEC2Change={(value) => setCustomEC2Count(value[0])}
                 onStorageChange={(value) => setCustomStorageTB(value[0])}
               />
               

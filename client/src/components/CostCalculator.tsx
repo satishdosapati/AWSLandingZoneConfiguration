@@ -3,21 +3,24 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LandingZoneConfig } from "@shared/schema";
-import { Calculator, DollarSign, Server, HardDrive } from "lucide-react";
+import { calculateCosts } from "@/utils/costCalculations";
+import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings } from "lucide-react";
 
 interface CostCalculatorProps {
   selectedConfig: LandingZoneConfig | null;
-  customVMs: number;
+  selectedFeatures: string[];
+  customEC2Count: number;
   customStorageTB: number;
-  onVMsChange: (value: number[]) => void;
+  onEC2Change: (value: number[]) => void;
   onStorageChange: (value: number[]) => void;
 }
 
 export default function CostCalculator({ 
   selectedConfig, 
-  customVMs, 
+  selectedFeatures,
+  customEC2Count, 
   customStorageTB, 
-  onVMsChange, 
+  onEC2Change, 
   onStorageChange 
 }: CostCalculatorProps) {
   if (!selectedConfig) {
@@ -40,9 +43,7 @@ export default function CostCalculator({
     );
   }
 
-  const managedServicesMonthly = (customVMs * selectedConfig.managedServicesCostPerEC2) + 
-                                (customStorageTB * selectedConfig.managedServicesCostPerTBStorage);
-  const totalMonthly = selectedConfig.baseInfraCostPerMonth + managedServicesMonthly;
+  const costs = calculateCosts(selectedConfig, selectedFeatures, customEC2Count, customStorageTB);
 
   return (
     <Card className="sticky top-6" data-testid="card-cost-calculator">
@@ -62,18 +63,18 @@ export default function CostCalculator({
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <Server className="h-4 w-4" />
-                <span className="text-sm font-medium">Virtual Machines</span>
+                <span className="text-sm font-medium">EC2 Instances</span>
               </div>
-              <Badge variant="outline" data-testid="text-vm-count">{customVMs}</Badge>
+              <Badge variant="outline" data-testid="text-ec2-count">{customEC2Count}</Badge>
             </div>
             <Slider
-              value={[customVMs]}
-              onValueChange={onVMsChange}
+              value={[customEC2Count]}
+              onValueChange={onEC2Change}
               max={200}
               min={1}
               step={1}
               className="w-full"
-              data-testid="slider-vms"
+              data-testid="slider-ec2"
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>1</span>
@@ -107,53 +108,99 @@ export default function CostCalculator({
 
         <Separator />
 
-        {/* Cost Breakdown */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-sm">Cost Breakdown</h4>
-          
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Infrastructure (monthly)</span>
-              <span className="font-mono" data-testid="text-infra-cost">
-                ${selectedConfig.baseInfraCostPerMonth.toLocaleString()}
-              </span>
+        {/* Three Separate Cost Estimates */}
+        <div className="space-y-4">
+          {/* 1. Infrastructure Monthly Cost */}
+          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <Building className="h-4 w-4 text-blue-600" />
+              <h4 className="font-semibold text-sm text-blue-900 dark:text-blue-100">Infrastructure (Monthly)</h4>
             </div>
-            
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Professional Services (one-time)</span>
-              <span className="font-mono" data-testid="text-professional-cost">
-                ${selectedConfig.baseProfessionalServicesCost.toLocaleString()}
-              </span>
-            </div>
-            
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                Managed Services ({customVMs} EC2 + {customStorageTB} TB)
-              </span>
-              <span className="font-mono" data-testid="text-managed-cost">
-                ${managedServicesMonthly.toLocaleString()}
-              </span>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Base Infrastructure</span>
+                <span className="font-mono">${costs.baseInfrastructureCost.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Features Add-on</span>
+                <span className="font-mono">+${costs.featuresInfrastructureCost.toLocaleString()}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between font-semibold">
+                <span>Total Infrastructure</span>
+                <span className="font-mono text-blue-700 dark:text-blue-300" data-testid="text-total-infrastructure">
+                  ${costs.totalInfrastructureCost.toLocaleString()}/month
+                </span>
+              </div>
             </div>
           </div>
 
-          <Separator />
-
-          <div className="flex justify-between text-base font-semibold">
-            <span>Total Monthly Cost</span>
-            <span className="font-mono text-primary" data-testid="text-total-monthly">
-              ${totalMonthly.toLocaleString()}
-            </span>
+          {/* 2. Professional Services (One-time) */}
+          <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <Wrench className="h-4 w-4 text-green-600" />
+              <h4 className="font-semibold text-sm text-green-900 dark:text-green-100">Professional Services (One-time)</h4>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Base Implementation</span>
+                <span className="font-mono">${costs.baseProfessionalServicesCost.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Features Setup</span>
+                <span className="font-mono">+${costs.featuresProfessionalServicesCost.toLocaleString()}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between font-semibold">
+                <span>Total Professional Services</span>
+                <span className="font-mono text-green-700 dark:text-green-300" data-testid="text-total-professional">
+                  ${costs.totalProfessionalServicesCost.toLocaleString()}
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Annual Projection */}
-        <div className="bg-muted/50 p-3 rounded-lg">
-          <div className="text-xs text-muted-foreground mb-1">Annual Projection</div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Year 1 Total</span>
-            <span className="font-mono font-semibold" data-testid="text-annual-cost">
-              ${(totalMonthly * 12 + selectedConfig.baseProfessionalServicesCost).toLocaleString()}
-            </span>
+          {/* 3. Managed Services (Monthly) */}
+          <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <Settings className="h-4 w-4 text-purple-600" />
+              <h4 className="font-semibold text-sm text-purple-900 dark:text-purple-100">Managed Services (Monthly)</h4>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">EC2 Management ({customEC2Count} instances)</span>
+                <span className="font-mono">${costs.managedServicesEC2Cost.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Storage Management ({customStorageTB} TB)</span>
+                <span className="font-mono">${costs.managedServicesStorageCost.toLocaleString()}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between font-semibold">
+                <span>Total Managed Services</span>
+                <span className="font-mono text-purple-700 dark:text-purple-300" data-testid="text-total-managed">
+                  ${costs.totalManagedServicesCost.toLocaleString()}/month
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="bg-muted/50 p-4 rounded-lg">
+            <div className="space-y-2">
+              <div className="flex justify-between text-base font-semibold">
+                <span>Total Monthly Cost</span>
+                <span className="font-mono text-primary" data-testid="text-total-monthly">
+                  ${costs.totalMonthlyCost.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">First Year Total</span>
+                <span className="font-mono font-semibold" data-testid="text-annual-cost">
+                  ${costs.totalFirstYearCost.toLocaleString()}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </CardContent>
