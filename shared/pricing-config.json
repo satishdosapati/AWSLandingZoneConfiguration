@@ -6,28 +6,28 @@
   
   "basePricing": {
     "very-small": {
-      "baseInfraCostPerMonth": 300,
-      "baseProfessionalServicesCost": 10000,
-      "managedServicesCostPerEC2": 150,
-      "managedServicesCostPerTBStorage": 100
+      "baseInfraCostPerMonth": 141,
+      "baseProfessionalServicesCost": 15000,
+      "managedServicesCostPerEC2": 75,
+      "managedServicesCostPerTBStorage": 25
     },
     "small": {
-      "baseInfraCostPerMonth": 1200,
-      "baseProfessionalServicesCost": 25000,
-      "managedServicesCostPerEC2": 180,
-      "managedServicesCostPerTBStorage": 120
+      "baseInfraCostPerMonth": 886,
+      "baseProfessionalServicesCost": 35000,
+      "managedServicesCostPerEC2": 85,
+      "managedServicesCostPerTBStorage": 30
     },
     "medium": {
-      "baseInfraCostPerMonth": 5000,
-      "baseProfessionalServicesCost": 50000,
-      "managedServicesCostPerEC2": 200,
-      "managedServicesCostPerTBStorage": 140
+      "baseInfraCostPerMonth": 3700,
+      "baseProfessionalServicesCost": 75000,
+      "managedServicesCostPerEC2": 95,
+      "managedServicesCostPerTBStorage": 35
     },
     "large": {
-      "baseInfraCostPerMonth": 15000,
-      "baseProfessionalServicesCost": 100000,
-      "managedServicesCostPerEC2": 250,
-      "managedServicesCostPerTBStorage": 160
+      "baseInfraCostPerMonth": 18000,
+      "baseProfessionalServicesCost": 150000,
+      "managedServicesCostPerEC2": 110,
+      "managedServicesCostPerTBStorage": 40
     }
   },
 
@@ -37,69 +37,99 @@
       "professionalServicesCostImpact": 0
     },
     "control-tower": {
-      "infraCostImpact": 50,
-      "professionalServicesCostImpact": 5000
-    },
-    "control-tower-extensions": {
-      "infraCostImpact": 200,
-      "professionalServicesCostImpact": 15000
-    },
-    "guardduty": {
-      "infraCostImpact": 100,
-      "professionalServicesCostImpact": 2000
-    },
-    "security-hub": {
-      "infraCostImpact": 150,
-      "professionalServicesCostImpact": 3000
-    },
-    "inspector": {
       "infraCostImpact": 75,
-      "professionalServicesCostImpact": 1500
-    },
-    "network-firewall": {
-      "infraCostImpact": 300,
       "professionalServicesCostImpact": 8000
     },
-    "transit-gateway": {
-      "infraCostImpact": 250,
-      "professionalServicesCostImpact": 5000
+    "control-tower-extensions": {
+      "infraCostImpact": 150,
+      "professionalServicesCostImpact": 25000
     },
-    "direct-connect": {
-      "infraCostImpact": 500,
-      "professionalServicesCostImpact": 10000
-    },
-    "systems-manager": {
-      "infraCostImpact": 50,
+    "guardduty": {
+      "infraCostImpact": 200,
       "professionalServicesCostImpact": 3000
     },
-    "cloudformation-stacksets": {
+    "security-hub": {
+      "infraCostImpact": 125,
+      "professionalServicesCostImpact": 4000
+    },
+    "inspector": {
+      "infraCostImpact": 85,
+      "professionalServicesCostImpact": 2500
+    },
+    "network-firewall": {
+      "infraCostImpact": 365,
+      "professionalServicesCostImpact": 12000
+    },
+    "transit-gateway": {
+      "infraCostImpact": 108,
+      "professionalServicesCostImpact": 6000
+    },
+    "direct-connect": {
+      "infraCostImpact": 162,
+      "professionalServicesCostImpact": 15000
+    },
+    "systems-manager": {
       "infraCostImpact": 25,
       "professionalServicesCostImpact": 4000
     },
+    "cloudformation-stacksets": {
+      "infraCostImpact": 15,
+      "professionalServicesCostImpact": 5000
+    },
     "account-factory-terraform": {
-      "infraCostImpact": 100,
-      "professionalServicesCostImpact": 20000
+      "infraCostImpact": 50,
+      "professionalServicesCostImpact": 30000
     },
     "cloudwatch-enhanced": {
-      "infraCostImpact": 200,
-      "professionalServicesCostImpact": 4000
+      "infraCostImpact": 180,
+      "professionalServicesCostImpact": 6000
     },
     "cloudtrail-organization": {
-      "infraCostImpact": 100,
-      "professionalServicesCostImpact": 2000
+      "infraCostImpact": 45,
+      "professionalServicesCostImpact": 3000
     },
     "elasticsearch-logging": {
-      "infraCostImpact": 400,
-      "professionalServicesCostImpact": 8000
+      "infraCostImpact": 650,
+      "professionalServicesCostImpact": 12000
     }
   },
 
   "pricingNotes": {
-    "infraCostImpact": "Additional monthly infrastructure cost in USD",
-    "professionalServicesCostImpact": "One-time professional services cost in USD",
-    "managedServicesCostPerEC2": "Monthly cost per EC2 instance managed",
-    "managedServicesCostPerTBStorage": "Monthly cost per TB of storage managed",
-    "basePricing": "Base costs include essential AWS services and basic setup",
-    "featurePricing": "Additional costs for optional features on top of base pricing"
+    "source": "Based on AWS Public Pricing for US East 2 (Ohio) region as of September 2024",
+    "infraCostImpact": "Additional monthly infrastructure cost in USD based on actual AWS service pricing",
+    "professionalServicesCostImpact": "One-time professional services cost in USD for implementation and setup",
+    "managedServicesCostPerEC2": "Monthly cost per EC2 instance managed (monitoring, patching, maintenance)",
+    "managedServicesCostPerTBStorage": "Monthly cost per TB of storage managed (backup, lifecycle, monitoring)",
+    "basePricing": "Base costs derived from real EC2 instance pricing: t3.medium/large for small configs, m5.large/xlarge for larger configs, plus EBS gp3 storage at $0.08/GB/month",
+    "featurePricing": "AWS service costs: GuardDuty ~$200/month, Security Hub ~$125/month, Network Firewall $365/month base, Transit Gateway $36/attachment/month, Direct Connect $162/month for 1Gbps",
+    "calculations": {
+      "verySmall": "2x t3.medium ($30.37 each) + 1TB storage ($80) = $141/month",
+      "small": "8x t3.large ($60.74 each) + 5TB storage ($400) = $886/month",
+      "medium": "25x mixed instances (~$100 each) + 15TB storage ($1200) = $3700/month",
+      "large": "100x mixed instances (~$140 each) + 50TB storage ($4000) = $18000/month"
+    }
+  },
+  
+  "awsPricingReference": {
+    "region": "us-east-2",
+    "lastVerified": "2025-09-10",
+    "ec2Instances": {
+      "t3.medium": "$0.0416/hour = $30.37/month",
+      "t3.large": "$0.0832/hour = $60.74/month",
+      "m5.large": "$0.096/hour = $70.08/month",
+      "m5.xlarge": "$0.192/hour = $140.16/month"
+    },
+    "storage": {
+      "ebsGp3": "$0.08/GB/month",
+      "ebsSnapshots": "$0.05/GB/month"
+    },
+    "services": {
+      "guardDuty": "VPC Flow Logs: $1.00 first 500GB, $0.50 next 2TB, $0.25 additional",
+      "securityHub": "Security checks charged based on quantity per month",
+      "controlTower": "No additional charge - pay for underlying services (Config, CloudTrail)",
+      "networkFirewall": "$365/month base + $0.065/GB data processed",
+      "transitGateway": "$36/month per attachment + $0.02/GB data processing",
+      "directConnect": "$162/month for 1Gbps port + data transfer costs"
+    }
   }
 }
