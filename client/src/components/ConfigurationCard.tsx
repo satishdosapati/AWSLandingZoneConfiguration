@@ -73,29 +73,29 @@ export default function ConfigurationCard({ config, value, isSelected, onSelect 
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <h4 className="font-medium text-foreground mb-1">Infrastructure</h4>
-            <p className="text-muted-foreground">${config.infraCostPerMonth.toLocaleString()}/month</p>
+            <h4 className="font-medium text-foreground mb-1">Base Infrastructure</h4>
+            <p className="text-muted-foreground">${config.baseInfraCostPerMonth.toLocaleString()}/month</p>
           </div>
           <div>
             <h4 className="font-medium text-foreground mb-1">Professional Services</h4>
-            <p className="text-muted-foreground">${config.professionalServicesCost.toLocaleString()} one-time</p>
+            <p className="text-muted-foreground">${config.baseProfessionalServicesCost.toLocaleString()} one-time</p>
           </div>
           <div>
             <h4 className="font-medium text-foreground mb-1">Default Resources</h4>
-            <p className="text-muted-foreground">{config.defaultVMs} VMs, {config.defaultStorageTB}TB storage</p>
+            <p className="text-muted-foreground">{config.defaultVMs} EC2 instances, {config.defaultStorageTB}TB storage</p>
           </div>
           <div>
             <h4 className="font-medium text-foreground mb-1">Managed Services</h4>
-            <p className="text-muted-foreground">${config.managedServicesCostPerVM}/VM + ${config.managedServicesCostPerTB}/TB</p>
+            <p className="text-muted-foreground">${config.managedServicesCostPerEC2}/EC2 + ${config.managedServicesCostPerTBStorage}/TB</p>
           </div>
         </div>
         
         <div className="border-t pt-4">
-          <h4 className="font-medium text-foreground mb-2">Key Features</h4>
+          <h4 className="font-medium text-foreground mb-2">Configuration Details</h4>
           <div className="space-y-2 text-sm text-muted-foreground">
             <p><strong>Accounts:</strong> {config.accountStructure}</p>
-            <p><strong>Security:</strong> {config.security.substring(0, 80)}...</p>
-            <p><strong>Networking:</strong> {config.networking.substring(0, 80)}...</p>
+            <p><strong>Organization:</strong> {config.organizationalStructure.substring(0, 80)}...</p>
+            <p><strong>Available Features:</strong> {config.availableFeatures.length} features</p>
           </div>
         </div>
       </CardContent>

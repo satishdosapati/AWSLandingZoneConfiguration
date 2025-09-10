@@ -40,9 +40,9 @@ export default function CostCalculator({
     );
   }
 
-  const managedServicesMonthly = (customVMs * selectedConfig.managedServicesCostPerVM) + 
-                                (customStorageTB * selectedConfig.managedServicesCostPerTB);
-  const totalMonthly = selectedConfig.infraCostPerMonth + managedServicesMonthly;
+  const managedServicesMonthly = (customVMs * selectedConfig.managedServicesCostPerEC2) + 
+                                (customStorageTB * selectedConfig.managedServicesCostPerTBStorage);
+  const totalMonthly = selectedConfig.baseInfraCostPerMonth + managedServicesMonthly;
 
   return (
     <Card className="sticky top-6" data-testid="card-cost-calculator">
@@ -115,20 +115,20 @@ export default function CostCalculator({
             <div className="flex justify-between">
               <span className="text-muted-foreground">Infrastructure (monthly)</span>
               <span className="font-mono" data-testid="text-infra-cost">
-                ${selectedConfig.infraCostPerMonth.toLocaleString()}
+                ${selectedConfig.baseInfraCostPerMonth.toLocaleString()}
               </span>
             </div>
             
             <div className="flex justify-between">
               <span className="text-muted-foreground">Professional Services (one-time)</span>
               <span className="font-mono" data-testid="text-professional-cost">
-                ${selectedConfig.professionalServicesCost.toLocaleString()}
+                ${selectedConfig.baseProfessionalServicesCost.toLocaleString()}
               </span>
             </div>
             
             <div className="flex justify-between">
               <span className="text-muted-foreground">
-                Managed Services ({customVMs} VMs + {customStorageTB} TB)
+                Managed Services ({customVMs} EC2 + {customStorageTB} TB)
               </span>
               <span className="font-mono" data-testid="text-managed-cost">
                 ${managedServicesMonthly.toLocaleString()}
@@ -152,7 +152,7 @@ export default function CostCalculator({
           <div className="flex justify-between items-center">
             <span className="text-sm">Year 1 Total</span>
             <span className="font-mono font-semibold" data-testid="text-annual-cost">
-              ${(totalMonthly * 12 + selectedConfig.professionalServicesCost).toLocaleString()}
+              ${(totalMonthly * 12 + selectedConfig.baseProfessionalServicesCost).toLocaleString()}
             </span>
           </div>
         </div>
