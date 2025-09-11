@@ -19,7 +19,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { LandingZoneConfig } from "@shared/schema";
+import { LandingZoneConfig, AdditionalCost } from "@shared/schema";
 import { calculateCosts } from "@shared/costCalculations";
 import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ interface CostCalculatorProps {
   selectedFeatures: string[];
   customEC2Count: number;
   customStorageTB: number;
+  additionalCosts: AdditionalCost[];
   onEC2Change: (value: number[]) => void;
   onStorageChange: (value: number[]) => void;
   onSubmit: () => void;
@@ -45,6 +46,7 @@ export default function CostCalculator({
   selectedFeatures,
   customEC2Count, 
   customStorageTB, 
+  additionalCosts,
   onEC2Change, 
   onStorageChange,
   onSubmit,
@@ -72,7 +74,7 @@ export default function CostCalculator({
     );
   }
 
-  const costs = calculateCosts(selectedConfig, selectedFeatures, customEC2Count, customStorageTB);
+  const costs = calculateCosts(selectedConfig, selectedFeatures, customEC2Count, customStorageTB, additionalCosts);
 
   return (
     <div className="sticky top-6">
@@ -180,6 +182,12 @@ export default function CostCalculator({
                 <span className="text-muted-foreground">Features Setup</span>
                 <span className="font-mono">+${costs.featuresProfessionalServicesCost.toLocaleString()}</span>
               </div>
+              {costs.additionalCostsTotal > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Additional Costs</span>
+                  <span className="font-mono">+${costs.additionalCostsTotal.toLocaleString()}</span>
+                </div>
+              )}
               <Separator />
               <div className="flex justify-between font-semibold">
                 <span>Total Professional Services</span>

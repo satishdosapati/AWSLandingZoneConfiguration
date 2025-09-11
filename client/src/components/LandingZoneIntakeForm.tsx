@@ -34,7 +34,7 @@ import ConfigurationCard from "./ConfigurationCard";
 import CostCalculator from "./CostCalculator";
 import ConfigurationDetails from "./ConfigurationDetails";
 import FeatureSelector from "./FeatureSelector";
-import { landingZoneConfigurations, LandingZoneConfig, presalesInfoSchema, type PresalesInfo, type InsertLandingZoneSubmission } from "@shared/schema";
+import { landingZoneConfigurations, LandingZoneConfig, presalesInfoSchema, type PresalesInfo, type InsertLandingZoneSubmission, type AdditionalCost } from "@shared/schema";
 import { CheckCircle, Settings, User } from "lucide-react";
 import { metricsTracker, calculateFormSections } from "@/utils/metricsTracker";
 
@@ -48,6 +48,7 @@ export default function LandingZoneIntakeForm() {
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [customEC2Count, setCustomEC2Count] = useState<number>(1);
   const [customStorageTB, setCustomStorageTB] = useState<number>(1);
+  const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([]);
   const { toast } = useToast();
   
   // Enhanced metrics tracking
@@ -137,6 +138,7 @@ export default function LandingZoneIntakeForm() {
           features: selectedFeatures.join(','),
           ec2: customEC2Count.toString(),
           storage: customStorageTB.toString(),
+          additionalCosts: encodeURIComponent(JSON.stringify(additionalCosts)),
           presalesEmail: variables.presalesInfo.presalesEngineerEmail,
           partnerName: variables.presalesInfo.partnerName,
           customerName: variables.presalesInfo.endCustomerName,
@@ -168,7 +170,8 @@ export default function LandingZoneIntakeForm() {
           selectedConfiguration,
           selectedFeatures,
           customEC2Count,
-          customStorageTB
+          customStorageTB,
+          additionalCosts
         );
         
         // Generate comprehensive metrics
@@ -185,6 +188,7 @@ export default function LandingZoneIntakeForm() {
             selectedFeatures,
             customEC2Count,
             customStorageTB,
+            additionalCosts,
           },
           presalesInfo: presalesData,
           submissionMetrics: enhancedMetrics,
@@ -391,6 +395,8 @@ export default function LandingZoneIntakeForm() {
                     selectedConfig={selectedConfiguration}
                     selectedFeatures={selectedFeatures}
                     onFeatureToggle={handleFeatureToggle}
+                    additionalCosts={additionalCosts}
+                    onAdditionalCostsChange={setAdditionalCosts}
                   />
                 </div>
               )}
@@ -403,6 +409,7 @@ export default function LandingZoneIntakeForm() {
                 selectedFeatures={selectedFeatures}
                 customEC2Count={customEC2Count}
                 customStorageTB={customStorageTB}
+                additionalCosts={additionalCosts}
                 onEC2Change={(value) => setCustomEC2Count(value[0])}
                 onStorageChange={(value) => setCustomStorageTB(value[0])}
                 onSubmit={handleSubmit}

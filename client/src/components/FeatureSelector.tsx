@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Feature, LandingZoneConfig, availableFeatures } from "@shared/schema";
+import { Feature, LandingZoneConfig, availableFeatures, AdditionalCost } from "@shared/schema";
 import { ChevronDown, Shield, Network, Cog, Eye, Building2, DollarSign, Info, Users, CreditCard, Database, FileCheck } from "lucide-react";
 import { useState } from "react";
+import AdditionalCostsSelector from "./AdditionalCostsSelector";
 
 /**
  * Feature Selection Component
@@ -32,6 +33,8 @@ interface FeatureSelectorProps {
   selectedConfig: LandingZoneConfig;
   selectedFeatures: string[];
   onFeatureToggle: (featureId: string, enabled: boolean) => void;
+  additionalCosts: AdditionalCost[];
+  onAdditionalCostsChange: (costs: AdditionalCost[]) => void;
 }
 
 const getCategoryIcon = (category: string) => {
@@ -80,7 +83,7 @@ const getCategoryColor = (category: string) => {
   }
 };
 
-export default function FeatureSelector({ selectedConfig, selectedFeatures, onFeatureToggle }: FeatureSelectorProps) {
+export default function FeatureSelector({ selectedConfig, selectedFeatures, onFeatureToggle, additionalCosts, onAdditionalCostsChange }: FeatureSelectorProps) {
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
     foundation: true,
     "identity-access-management": true,
@@ -253,6 +256,14 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
         })}
       </CardContent>
     </Card>
+    
+    {/* Additional Costs Selector */}
+    <div className="mt-6">
+      <AdditionalCostsSelector
+        additionalCosts={additionalCosts}
+        onAdditionalCostsChange={onAdditionalCostsChange}
+      />
+    </div>
     </TooltipProvider>
   );
 }

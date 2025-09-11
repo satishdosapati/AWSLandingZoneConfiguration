@@ -33,11 +33,19 @@ export const landingZoneConfigSchema = z.object({
   mandatoryFeatures: z.array(z.string()), // Array of mandatory feature IDs
 });
 
+// Additional cost item schema
+export const additionalCostSchema = z.object({
+  id: z.string(),
+  description: z.string().min(1, "Description is required"),
+  amount: z.number().min(0, "Amount must be non-negative"),
+});
+
 export const costCalculationSchema = z.object({
   selectedConfig: z.string(),
   selectedFeatures: z.array(z.string()),
   customEC2Count: z.number(),
   customStorageTB: z.number(),
+  additionalCosts: z.array(additionalCostSchema).default([]),
 });
 
 // Presales Engineer Information Schema
@@ -123,6 +131,7 @@ export const insertLandingZoneSubmissionSchema = landingZoneSubmissionSchema.omi
 // Type exports
 export type Feature = z.infer<typeof featureSchema>;
 export type LandingZoneConfig = z.infer<typeof landingZoneConfigSchema>;
+export type AdditionalCost = z.infer<typeof additionalCostSchema>;
 export type CostCalculation = z.infer<typeof costCalculationSchema>;
 export type PresalesInfo = z.infer<typeof presalesInfoSchema>;
 export type SubmissionMetrics = z.infer<typeof submissionMetricsSchema>;

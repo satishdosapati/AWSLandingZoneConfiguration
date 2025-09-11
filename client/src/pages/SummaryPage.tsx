@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature } from "@shared/schema";
+import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature, AdditionalCost } from "@shared/schema";
 import { calculateCosts, CostBreakdown } from "@shared/costCalculations";
 import { getPricingVersion } from "@shared/pricing-loader";
 import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User } from "lucide-react";
@@ -16,6 +16,7 @@ interface SummaryData {
   selectedFeatures: string[];
   customEC2Count: number;
   customStorageTB: number;
+  additionalCosts: AdditionalCost[];
   presalesEngineerEmail?: string;
   partnerName?: string;
   customerName?: string;
@@ -291,6 +292,7 @@ const ConfigurationPDFDocument = ({
   costs, 
   customEC2Count, 
   customStorageTB,
+  additionalCosts,
   presalesData
 }: {
   config: LandingZoneConfig;
@@ -298,6 +300,7 @@ const ConfigurationPDFDocument = ({
   costs: CostBreakdown;
   customEC2Count: number;
   customStorageTB: number;
+  additionalCosts: AdditionalCost[];
   presalesData: { presalesEngineerEmail?: string; partnerName?: string; customerName?: string; awsReferenceIds?: string; };
 }) => {
   const pricingInfo = getPricingVersion();
@@ -393,6 +396,19 @@ const ConfigurationPDFDocument = ({
           ))}
         </View>
 
+        {/* Additional Costs */}
+        {additionalCosts.length > 0 && (
+          <View style={pdfStyles.section}>
+            <Text style={pdfStyles.sectionTitle}>Additional Professional Services Costs ({additionalCosts.length})</Text>
+            {additionalCosts.map((cost) => (
+              <View key={cost.id} style={pdfStyles.featureItem}>
+                <Text style={pdfStyles.featureName}>{cost.description}</Text>
+                <Text style={pdfStyles.featureDescription}>${cost.amount.toLocaleString()}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
         {/* Cost Breakdown */}
         <View style={pdfStyles.section}>
           <Text style={pdfStyles.sectionTitle}>Cost Breakdown</Text>
@@ -425,6 +441,12 @@ const ConfigurationPDFDocument = ({
               <Text style={pdfStyles.costLabel}>Features Setup</Text>
               <Text style={pdfStyles.costValue}>+${costs.featuresProfessionalServicesCost.toLocaleString()}</Text>
             </View>
+            {costs.additionalCostsTotal > 0 && (
+              <View style={pdfStyles.costRow}>
+                <Text style={pdfStyles.costLabel}>Additional Costs</Text>
+                <Text style={pdfStyles.costValue}>+${costs.additionalCostsTotal.toLocaleString()}</Text>
+              </View>
+            )}
             <View style={pdfStyles.totalRow}>
               <Text style={pdfStyles.totalLabel}>Total Professional Services</Text>
               <Text style={pdfStyles.totalValue}>${costs.totalProfessionalServicesCost.toLocaleString()}</Text>
@@ -483,6 +505,7 @@ export default function SummaryPage() {
   const [config, setConfig] = useState<LandingZoneConfig | null>(null);
   const [costs, setCosts] = useState<CostBreakdown | null>(null);
   const [selectedFeatureObjects, setSelectedFeatureObjects] = useState<Feature[]>([]);
+  const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([]);
 
   useEffect(() => {
     if (match) {
@@ -496,13 +519,25 @@ export default function SummaryPage() {
       const partnerName = urlParams.get('partnerName');
       const customerName = urlParams.get('customerName');
       const awsReferenceIds = urlParams.get('awsReferenceIds');
+      const additionalCostsParam = urlParams.get('additionalCosts');
 
       if (configSize && ec2Count && storageTB) {
+        // Parse additional costs from URL parameter
+        let parsedAdditionalCosts: AdditionalCost[] = [];
+        if (additionalCostsParam) {
+          try {
+            parsedAdditionalCosts = JSON.parse(decodeURIComponent(additionalCostsParam));
+          } catch (error) {
+            console.warn('Failed to parse additional costs from URL:', error);
+          }
+        }
+
         const data: SummaryData = {
           configSize,
           selectedFeatures: featuresParam ? featuresParam.split(',') : [],
           customEC2Count: parseInt(ec2Count, 10),
           customStorageTB: parseInt(storageTB, 10),
+          additionalCosts: parsedAdditionalCosts,
           presalesEngineerEmail: presalesEngineerEmail || undefined,
           partnerName: partnerName || undefined,
           customerName: customerName || undefined,
@@ -521,9 +556,11 @@ export default function SummaryPage() {
             selectedConfig, 
             data.selectedFeatures, 
             data.customEC2Count, 
-            data.customStorageTB
+            data.customStorageTB,
+            data.additionalCosts
           );
           setCosts(calculatedCosts);
+          setAdditionalCosts(data.additionalCosts);
 
           // Get selected feature objects
           const features = availableFeatures.filter(feature => 
@@ -600,6 +637,7 @@ export default function SummaryPage() {
                     costs={costs}
                     customEC2Count={summaryData.customEC2Count}
                     customStorageTB={summaryData.customStorageTB}
+                    additionalCosts={additionalCosts}
                     presalesData={{
                       presalesEngineerEmail: summaryData.presalesEngineerEmail,
                       partnerName: summaryData.partnerName,
@@ -768,6 +806,49 @@ export default function SummaryPage() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Additional Costs */}
+              {additionalCosts.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Additional Professional Services Costs ({additionalCosts.length})
+                    </CardTitle>
+                    <CardDescription>
+                      Custom professional services costs added to your configuration
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {additionalCosts.map((cost) => (
+                        <div 
+                          key={cost.id} 
+                          className="bg-green-50 dark:bg-green-950/20 p-3 rounded-lg border-l-4 border-green-500"
+                          data-testid={`additional-cost-${cost.id}`}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h5 className="font-medium mb-1">{cost.description}</h5>
+                            </div>
+                            <Badge variant="outline" className="text-green-700 border-green-300">
+                              ${cost.amount.toLocaleString()}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold">Total Additional Costs:</span>
+                          <span className="font-mono text-lg text-green-700 dark:text-green-300">
+                            ${additionalCosts.reduce((sum, cost) => sum + cost.amount, 0).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Cost Summary Sidebar */}
@@ -820,6 +901,12 @@ export default function SummaryPage() {
                         <span className="text-muted-foreground">Features</span>
                         <span>+${costs.featuresProfessionalServicesCost.toLocaleString()}</span>
                       </div>
+                      {costs.additionalCostsTotal > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Additional</span>
+                          <span>+${costs.additionalCostsTotal.toLocaleString()}</span>
+                        </div>
+                      )}
                       <Separator />
                       <div className="flex justify-between font-semibold">
                         <span>Total</span>
@@ -882,6 +969,7 @@ export default function SummaryPage() {
                         costs={costs}
                         customEC2Count={summaryData.customEC2Count}
                         customStorageTB={summaryData.customStorageTB}
+                        additionalCosts={additionalCosts}
                         presalesData={{
                           presalesEngineerEmail: summaryData.presalesEngineerEmail,
                           partnerName: summaryData.partnerName,

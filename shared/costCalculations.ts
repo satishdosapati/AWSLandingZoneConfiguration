@@ -8,7 +8,7 @@
  * @version 1.0.0
  */
 
-import { LandingZoneConfig, Feature, availableFeatures } from "./schema";
+import { LandingZoneConfig, Feature, availableFeatures, AdditionalCost } from "./schema";
 
 /**
  * Comprehensive cost breakdown interface for AWS Landing Zone configurations
@@ -23,6 +23,7 @@ export interface CostBreakdown {
   // Professional services costs (one-time)
   baseProfessionalServicesCost: number;
   featuresProfessionalServicesCost: number;
+  additionalCostsTotal: number;
   totalProfessionalServicesCost: number;
   
   // Managed services costs (monthly)
@@ -40,7 +41,7 @@ export interface CostBreakdown {
  * 
  * Provides detailed cost breakdown including:
  * - Infrastructure costs (base + feature-specific)
- * - Professional services (implementation costs)  
+ * - Professional services (implementation costs + additional costs)  
  * - Managed services (ongoing EC2 and storage management)
  * - Total monthly and first-year costs
  * 
@@ -48,13 +49,15 @@ export interface CostBreakdown {
  * @param selectedFeatures - Array of selected feature IDs
  * @param ec2Count - Number of EC2 instances to manage
  * @param storageTB - Amount of storage in TB to manage
+ * @param additionalCosts - Array of additional cost items
  * @returns Complete cost breakdown with monthly and annual totals
  */
 export function calculateCosts(
   config: LandingZoneConfig,
   selectedFeatures: string[],
   ec2Count: number,
-  storageTB: number
+  storageTB: number,
+  additionalCosts: AdditionalCost[] = []
 ): CostBreakdown {
   // Get feature objects for selected features
   const selectedFeatureObjects = availableFeatures.filter(feature => 
@@ -74,7 +77,8 @@ export function calculateCosts(
   const featuresProfessionalServicesCost = selectedFeatureObjects.reduce(
     (sum, feature) => sum + feature.professionalServicesCostImpact, 0
   );
-  const totalProfessionalServicesCost = baseProfessionalServicesCost + featuresProfessionalServicesCost;
+  const additionalCostsTotal = additionalCosts.reduce((sum, cost) => sum + cost.amount, 0);
+  const totalProfessionalServicesCost = baseProfessionalServicesCost + featuresProfessionalServicesCost + additionalCostsTotal;
 
   // Calculate managed services costs (monthly)
   const managedServicesEC2Cost = ec2Count * config.managedServicesCostPerEC2;
@@ -91,6 +95,7 @@ export function calculateCosts(
     totalInfrastructureCost,
     baseProfessionalServicesCost,
     featuresProfessionalServicesCost,
+    additionalCostsTotal,
     totalProfessionalServicesCost,
     managedServicesEC2Cost,
     managedServicesStorageCost,
