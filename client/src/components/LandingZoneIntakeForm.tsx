@@ -175,6 +175,7 @@ export default function LandingZoneIntakeForm() {
             ...enhancedMetrics,
             configurationSize: selectedConfiguration.size,
             totalFeaturesSelected: selectedFeatures.length,
+            totalEstimatedCost: costBreakdown.totalFirstYearCost, // Add the missing required field
           },
         };
         
