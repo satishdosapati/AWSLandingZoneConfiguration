@@ -45,57 +45,42 @@ const getSizeBadgeVariant = (size: string) => {
 export default function ConfigurationCard({ config, value, isSelected, onSelect }: ConfigurationCardProps) {
   return (
     <Card 
-      className={`cursor-pointer transition-all duration-200 hover-elevate ${
+      className={`cursor-pointer transition-all duration-200 hover-elevate min-h-40 flex flex-col ${
         isSelected ? "ring-2 ring-primary border-primary" : ""
       }`}
       onClick={() => onSelect(value)}
       data-testid={`card-config-${config.size}`}
     >
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value={value} id={value} className="sr-only" />
-            <div className="flex items-center gap-2">
-              {getSizeIcon(config.size)}
-              <div>
-                <CardTitle className="text-lg font-semibold">{config.name}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground mt-1">
-                  {config.description}
-                </CardDescription>
-              </div>
-            </div>
+      <RadioGroupItem value={value} id={value} className="sr-only" />
+      <CardHeader className="pb-3 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {getSizeIcon(config.size)}
+            <CardTitle className="text-base font-semibold line-clamp-2">
+              {config.name.replace(/Customers?/g, '').replace(/\([^)]*\)/, '').trim()}
+            </CardTitle>
           </div>
-          <Badge variant={getSizeBadgeVariant(config.size) as any} className="ml-2">
+          <Badge variant={getSizeBadgeVariant(config.size) as any} className="text-xs">
             {config.size.replace("-", " ").toUpperCase()}
           </Badge>
         </div>
+        <CardDescription className="text-xs text-muted-foreground line-clamp-2 mt-1">
+          {config.description.length > 60 ? config.description.substring(0, 60) + '...' : config.description}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+      <CardContent className="flex-1 space-y-3">
+        <div className="space-y-2 text-xs">
           <div>
-            <h4 className="font-medium text-foreground mb-1">Base Infrastructure</h4>
-            <p className="text-muted-foreground">${config.baseInfraCostPerMonth.toLocaleString()}/month</p>
+            <h4 className="font-medium text-foreground">Base Cost</h4>
+            <p className="text-muted-foreground">${config.baseInfraCostPerMonth.toLocaleString()}/mo</p>
           </div>
           <div>
-            <h4 className="font-medium text-foreground mb-1">Professional Services</h4>
-            <p className="text-muted-foreground">${config.baseProfessionalServicesCost.toLocaleString()} one-time</p>
+            <h4 className="font-medium text-foreground">Resources</h4>
+            <p className="text-muted-foreground">{config.defaultVMs} VMs, {config.defaultStorageTB}TB</p>
           </div>
           <div>
-            <h4 className="font-medium text-foreground mb-1">Default Resources</h4>
-            <p className="text-muted-foreground">{config.defaultVMs} EC2 instances, {config.defaultStorageTB}TB storage</p>
-          </div>
-          <div>
-            <h4 className="font-medium text-foreground mb-1">Managed Services</h4>
-            <p className="text-muted-foreground">${config.managedServicesCostPerEC2}/EC2 + ${config.managedServicesCostPerTBStorage}/TB</p>
-          </div>
-        </div>
-        
-        <div className="border-t pt-4">
-          <h4 className="font-medium text-foreground mb-2">Configuration Details</h4>
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p><strong>Accounts:</strong> {config.accountStructure}</p>
-            <p><strong>Organization:</strong> {config.organizationalStructure.substring(0, 80)}...</p>
-            <p><strong>Available Features:</strong> {config.availableFeatures.length} features</p>
+            <h4 className="font-medium text-foreground">Features</h4>
+            <p className="text-muted-foreground">{config.availableFeatures.length} available</p>
           </div>
         </div>
       </CardContent>

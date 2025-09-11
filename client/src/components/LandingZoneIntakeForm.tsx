@@ -94,7 +94,7 @@ export default function LandingZoneIntakeForm() {
                   <RadioGroup 
                     value={selectedConfig} 
                     onValueChange={handleConfigSelection}
-                    className="space-y-4"
+                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
                     data-testid="radiogroup-configurations"
                   >
                     {landingZoneConfigurations.map((config) => (
