@@ -215,6 +215,59 @@ const pdfStyles = StyleSheet.create({
     width: '30%',
     textAlign: 'right',
   },
+  // Enhanced presales section styling
+  presalesSection: {
+    backgroundColor: '#EBF5FF',
+    border: '2px solid #1B4B8C',
+    borderRadius: 8,
+    padding: 20,
+    marginBottom: 25,
+  },
+  presalesTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1B4B8C',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  presalesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  presalesColumn: {
+    width: '48%',
+    marginBottom: 10,
+  },
+  presalesLabel: {
+    fontSize: 11,
+    color: '#374151',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  presalesValue: {
+    fontSize: 12,
+    color: '#1B4B8C',
+    fontWeight: 'bold',
+    backgroundColor: '#FFFFFF',
+    padding: 6,
+    borderRadius: 4,
+    border: '1px solid #E5E7EB',
+  },
+  presalesFullWidth: {
+    width: '100%',
+    marginTop: 8,
+  },
+  presalesReferenceIds: {
+    fontSize: 10,
+    color: '#374151',
+    backgroundColor: '#F8FAFC',
+    padding: 8,
+    borderRadius: 4,
+    border: '1px solid #E5E7EB',
+    fontFamily: 'Courier',
+    lineHeight: 1.4,
+  },
   footer: {
     position: 'absolute',
     bottom: 40,
@@ -261,36 +314,40 @@ const ConfigurationPDFDocument = ({
           <Text style={pdfStyles.documentSubtitle}>Generated on {currentDate}</Text>
         </View>
 
-        {/* Presales Information */}
-        {(presalesData.presalesEmail || presalesData.partnerName || presalesData.customerName) && (
-          <View style={pdfStyles.section}>
-            <Text style={pdfStyles.sectionTitle}>Presales Information</Text>
-            <View style={pdfStyles.configCard}>
+        {/* Enhanced Presales Information Section */}
+        {(presalesData.presalesEmail || presalesData.partnerName || presalesData.customerName || presalesData.awsReferenceIds) && (
+          <View style={pdfStyles.presalesSection}>
+            <Text style={pdfStyles.presalesTitle}>PROJECT INFORMATION</Text>
+            
+            <View style={pdfStyles.presalesGrid}>
               {presalesData.presalesEmail && (
-                <View style={pdfStyles.resourceRow}>
-                  <Text style={pdfStyles.resourceRowLabel}>Presales Engineer:</Text>
-                  <Text style={pdfStyles.resourceRowValue}>{presalesData.presalesEmail}</Text>
+                <View style={pdfStyles.presalesColumn}>
+                  <Text style={pdfStyles.presalesLabel}>Presales Engineer</Text>
+                  <Text style={pdfStyles.presalesValue}>{presalesData.presalesEmail}</Text>
                 </View>
               )}
+              
               {presalesData.partnerName && (
-                <View style={pdfStyles.resourceRow}>
-                  <Text style={pdfStyles.resourceRowLabel}>Partner:</Text>
-                  <Text style={pdfStyles.resourceRowValue}>{presalesData.partnerName}</Text>
+                <View style={pdfStyles.presalesColumn}>
+                  <Text style={pdfStyles.presalesLabel}>Partner Organization</Text>
+                  <Text style={pdfStyles.presalesValue}>{presalesData.partnerName}</Text>
                 </View>
               )}
+              
               {presalesData.customerName && (
-                <View style={pdfStyles.resourceRow}>
-                  <Text style={pdfStyles.resourceRowLabel}>End Customer:</Text>
-                  <Text style={pdfStyles.resourceRowValue}>{presalesData.customerName}</Text>
-                </View>
-              )}
-              {presalesData.awsReferenceIds && (
-                <View style={pdfStyles.structureSection}>
-                  <Text style={pdfStyles.structureLabel}>AWS Reference IDs</Text>
-                  <Text style={pdfStyles.structureValue}>{presalesData.awsReferenceIds}</Text>
+                <View style={pdfStyles.presalesColumn}>
+                  <Text style={pdfStyles.presalesLabel}>End Customer</Text>
+                  <Text style={pdfStyles.presalesValue}>{presalesData.customerName}</Text>
                 </View>
               )}
             </View>
+            
+            {presalesData.awsReferenceIds && (
+              <View style={pdfStyles.presalesFullWidth}>
+                <Text style={pdfStyles.presalesLabel}>AWS Reference IDs</Text>
+                <Text style={pdfStyles.presalesReferenceIds}>{presalesData.awsReferenceIds}</Text>
+              </View>
+            )}
           </View>
         )}
 
