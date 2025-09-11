@@ -42,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.costCalculation.customStorageTB
       );
       
-      // Create the submission with calculated metrics
+      // Create the submission with calculated metrics, ensuring all required fields are present
       const submissionToStore = {
         ...validatedData,
         submissionMetrics: {
@@ -50,6 +50,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
           configurationSize: selectedConfig.size,
           totalFeaturesSelected: validatedData.costCalculation.selectedFeatures.length,
           totalEstimatedCost: costBreakdown.totalFirstYearCost,
+          // Ensure optional fields have defaults if not provided
+          pageLoadTime: validatedData.submissionMetrics.pageLoadTime || undefined,
+          configurationChanges: validatedData.submissionMetrics.configurationChanges || 0,
+          featureToggleCount: validatedData.submissionMetrics.featureToggleCount || 0,
+          formFieldInteractions: validatedData.submissionMetrics.formFieldInteractions || 0,
+          costCalculatorViews: validatedData.submissionMetrics.costCalculatorViews || 0,
+          timezone: validatedData.submissionMetrics.timezone || undefined,
+          language: validatedData.submissionMetrics.language || undefined,
+          screenResolution: validatedData.submissionMetrics.screenResolution || undefined,
+          deviceType: validatedData.submissionMetrics.deviceType || undefined,
+          referralSource: validatedData.submissionMetrics.referralSource || undefined,
+          isFirstTimeVisitor: validatedData.submissionMetrics.isFirstTimeVisitor || undefined,
+          previousSessionsCount: validatedData.submissionMetrics.previousSessionsCount || undefined,
+          formCompletionRate: validatedData.submissionMetrics.formCompletionRate || undefined,
+          abandonmentPoint: validatedData.submissionMetrics.abandonmentPoint || undefined,
+          validationErrors: validatedData.submissionMetrics.validationErrors || [],
+          selectedFeatureCategories: validatedData.submissionMetrics.selectedFeatureCategories || [],
+          mandatoryFeaturesAccepted: validatedData.submissionMetrics.mandatoryFeaturesAccepted || 0,
+          optionalFeaturesAdded: validatedData.submissionMetrics.optionalFeaturesAdded || 0,
+          costRange: validatedData.submissionMetrics.costRange || undefined,
+          costPerVMCalculated: validatedData.submissionMetrics.costPerVMCalculated || undefined,
+          costPerTBCalculated: validatedData.submissionMetrics.costPerTBCalculated || undefined,
         }
       };
       

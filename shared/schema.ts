@@ -48,7 +48,7 @@ export const presalesInfoSchema = z.object({
   awsReferenceIds: z.string().optional(), // Optional field for multiple AWS reference IDs
 });
 
-// Submission Metrics Schema for Reporting
+// Enhanced Submission Metrics Schema for Comprehensive Reporting
 export const submissionMetricsSchema = z.object({
   submissionId: z.string().uuid(), // Unique identifier for this submission
   submittedAt: z.date(), // Timestamp when the form was submitted
@@ -58,6 +58,39 @@ export const submissionMetricsSchema = z.object({
   totalFeaturesSelected: z.number().min(0), // Count of features selected
   totalEstimatedCost: z.number().min(0), // Total estimated cost in dollars
   timeSpentOnForm: z.number().optional(), // Time in seconds from first interaction to submission
+  
+  // Enhanced user behavior metrics
+  pageLoadTime: z.number().optional(), // Time to load the form page (ms)
+  configurationChanges: z.number().optional(), // Number of times user changed configuration
+  featureToggleCount: z.number().optional(), // Number of times user toggled features
+  formFieldInteractions: z.number().optional(), // Total form field interactions
+  costCalculatorViews: z.number().optional(), // Number of times cost calculator was viewed
+  
+  // Geographic and device information
+  timezone: z.string().optional(), // User's timezone
+  language: z.string().optional(), // Browser language preference
+  screenResolution: z.string().optional(), // Screen resolution (e.g., "1920x1080")
+  deviceType: z.enum(["desktop", "tablet", "mobile", "unknown"]).optional(), // Device classification
+  
+  // Business intelligence metrics
+  referralSource: z.string().optional(), // How did user arrive at the form
+  isFirstTimeVisitor: z.boolean().optional(), // Is this a first-time visitor (based on localStorage)
+  previousSessionsCount: z.number().optional(), // Number of previous sessions
+  
+  // Form completion patterns
+  formCompletionRate: z.number().optional(), // Percentage of form completed (0-100)
+  abandonmentPoint: z.string().optional(), // Last section viewed before abandonment
+  validationErrors: z.array(z.string()).optional(), // Types of validation errors encountered
+  
+  // Feature-specific analytics
+  selectedFeatureCategories: z.array(z.string()).optional(), // Categories of selected features
+  mandatoryFeaturesAccepted: z.number().optional(), // Count of mandatory features user accepted
+  optionalFeaturesAdded: z.number().optional(), // Count of optional features user added
+  
+  // Cost analysis metrics
+  costRange: z.enum(["under-10k", "10k-50k", "50k-100k", "100k-500k", "over-500k"]).optional(),
+  costPerVMCalculated: z.number().optional(), // Cost per VM for this configuration
+  costPerTBCalculated: z.number().optional(), // Cost per TB for this configuration
 });
 
 // Complete submission schema that combines all form data

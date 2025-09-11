@@ -18,6 +18,7 @@ import ConfigurationDetails from "./ConfigurationDetails";
 import FeatureSelector from "./FeatureSelector";
 import { landingZoneConfigurations, LandingZoneConfig, presalesInfoSchema, type PresalesInfo } from "@shared/schema";
 import { CheckCircle, Settings, FileText, User } from "lucide-react";
+import { metricsTracker, calculateFormSections } from "@/utils/metricsTracker";
 
 export default function LandingZoneIntakeForm() {
   const [, setLocation] = useLocation();
@@ -27,7 +28,7 @@ export default function LandingZoneIntakeForm() {
   const [customStorageTB, setCustomStorageTB] = useState<number>(1);
   const { toast } = useToast();
   
-  // Track form interaction time for metrics
+  // Enhanced metrics tracking
   const formStartTime = useRef<Date>(new Date());
   const sessionId = useRef<string>(crypto.randomUUID());
 
@@ -41,24 +42,43 @@ export default function LandingZoneIntakeForm() {
       awsReferenceIds: "",
     },
   });
+  
+  // Track form completion rate
+  useEffect(() => {
+    const sections = calculateFormSections(form.getValues(), selectedConfig, selectedFeatures);
+    metricsTracker.updateFormCompletionRate(sections.completed, sections.total);
+  }, [form.watch(), selectedConfig, selectedFeatures]);
 
   const selectedConfiguration = landingZoneConfigurations.find(
     config => config.size === selectedConfig
   );
 
-  // Set default values when configuration changes
+  // Enhanced configuration selection with metrics
   const handleConfigSelection = (value: string) => {
     setSelectedConfig(value);
+    metricsTracker.trackConfigurationChange();
+    
     const config = landingZoneConfigurations.find(c => c.size === value);
     if (config) {
       setCustomEC2Count(config.defaultVMs);
       setCustomStorageTB(config.defaultStorageTB);
       // Set mandatory features as selected by default
       setSelectedFeatures(config.mandatoryFeatures);
+      
+      // Track mandatory feature acceptance
+      config.mandatoryFeatures.forEach(featureId => {
+        metricsTracker.trackFeatureAcceptance(featureId, true);
+      });
     }
   };
 
   const handleFeatureToggle = (featureId: string, enabled: boolean) => {
+    // Track feature toggle metrics
+    metricsTracker.trackFeatureToggle(featureId, enabled);
+    if (enabled) {
+      metricsTracker.trackFeatureAcceptance(featureId, false);
+    }
+    
     setSelectedFeatures(prev => {
       if (enabled) {
         return [...prev, featureId];
@@ -82,7 +102,7 @@ export default function LandingZoneIntakeForm() {
   const submitMutation = useMutation({
     mutationFn: async (submissionData: any) => {
       const response = await apiRequest('POST', '/api/submissions', submissionData);
-      return response.json();
+      return await response.json();
     },
     onSuccess: (data, variables) => {
       console.log('Form submitted successfully:', data);
@@ -122,12 +142,25 @@ export default function LandingZoneIntakeForm() {
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate presales form first
-    form.handleSubmit((presalesData) => {
+    form.handleSubmit(async (presalesData) => {
       if (selectedConfiguration) {
-        // Calculate time spent on form
-        const timeSpentOnForm = Math.floor((Date.now() - formStartTime.current.getTime()) / 1000);
+        // Calculate total cost for metrics
+        const { calculateCosts } = await import('@shared/costCalculations');
+        const costBreakdown = calculateCosts(
+          selectedConfiguration,
+          selectedFeatures,
+          customEC2Count,
+          customStorageTB
+        );
+        
+        // Generate comprehensive metrics
+        const enhancedMetrics = metricsTracker.generateSubmissionMetrics(
+          costBreakdown.totalFirstYearCost,
+          customEC2Count,
+          customStorageTB
+        );
         
         // Prepare submission data
         const submissionData = {
@@ -139,11 +172,9 @@ export default function LandingZoneIntakeForm() {
           },
           presalesInfo: presalesData,
           submissionMetrics: {
-            sessionId: sessionId.current,
-            userAgent: navigator.userAgent,
+            ...enhancedMetrics,
             configurationSize: selectedConfiguration.size,
             totalFeaturesSelected: selectedFeatures.length,
-            timeSpentOnForm,
           },
         };
         
@@ -152,6 +183,11 @@ export default function LandingZoneIntakeForm() {
       }
     }, (errors) => {
       console.log('Form validation errors:', errors);
+      
+      // Track validation errors for metrics
+      Object.keys(errors).forEach(fieldName => {
+        metricsTracker.trackValidationError(fieldName);
+      });
       
       toast({
         title: "Please check your inputs",

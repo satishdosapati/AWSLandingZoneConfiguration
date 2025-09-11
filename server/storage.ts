@@ -28,6 +28,38 @@ export interface SubmissionStats {
   topPartners: Array<{ name: string; count: number }>;
   submissionsLastWeek: number;
   submissionsLastMonth: number;
+  
+  // Enhanced business intelligence metrics
+  averageTimeSpentOnForm: number;
+  conversionRate: number; // Percentage of sessions that result in submissions
+  popularFeatures: Array<{ feature: string; count: number; percentage: number }>;
+  averageFeatureCount: number;
+  costRangeDistribution: Record<string, number>;
+  deviceTypeDistribution: Record<string, number>;
+  topTimezones: Array<{ timezone: string; count: number }>;
+  
+  // Partner engagement analytics
+  partnerEngagementMetrics: Array<{
+    partnerName: string;
+    totalSubmissions: number;
+    averageCost: number;
+    averageTimeSpent: number;
+    popularConfigurations: Array<{ config: string; count: number }>;
+  }>;
+  
+  // Form completion analytics
+  formCompletionStats: {
+    averageCompletionRate: number;
+    commonAbandonmentPoints: Array<{ point: string; count: number }>;
+    mostCommonValidationErrors: Array<{ error: string; count: number }>;
+  };
+  
+  // Time-based trend analysis
+  submissionTrends: {
+    daily: Array<{ date: string; count: number; totalValue: number }>;
+    hourly: Array<{ hour: number; count: number }>;
+    byDayOfWeek: Array<{ day: string; count: number }>;
+  };
 }
 
 export class MemStorage implements IStorage {
@@ -107,6 +139,26 @@ export class MemStorage implements IStorage {
         topPartners: [],
         submissionsLastWeek: 0,
         submissionsLastMonth: 0,
+        
+        // Enhanced metrics defaults
+        averageTimeSpentOnForm: 0,
+        conversionRate: 0,
+        popularFeatures: [],
+        averageFeatureCount: 0,
+        costRangeDistribution: {},
+        deviceTypeDistribution: {},
+        topTimezones: [],
+        partnerEngagementMetrics: [],
+        formCompletionStats: {
+          averageCompletionRate: 0,
+          commonAbandonmentPoints: [],
+          mostCommonValidationErrors: [],
+        },
+        submissionTrends: {
+          daily: [],
+          hourly: [],
+          byDayOfWeek: [],
+        },
       };
     }
     
@@ -148,6 +200,162 @@ export class MemStorage implements IStorage {
       s.submissionMetrics.submittedAt >= oneMonthAgo
     ).length;
     
+    // Enhanced analytics calculations
+    const validTimeSubmissions = submissions.filter(s => s.submissionMetrics.timeSpentOnForm);
+    const averageTimeSpentOnForm = validTimeSubmissions.length > 0 
+      ? validTimeSubmissions.reduce((sum, s) => sum + (s.submissionMetrics.timeSpentOnForm || 0), 0) / validTimeSubmissions.length
+      : 0;
+    
+    // Calculate feature popularity
+    const featureCounts = submissions.reduce((acc, submission) => {
+      submission.costCalculation.selectedFeatures.forEach(feature => {
+        acc[feature] = (acc[feature] || 0) + 1;
+      });
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const popularFeatures = Object.entries(featureCounts)
+      .map(([feature, count]) => ({ 
+        feature, 
+        count, 
+        percentage: Math.round((count / totalSubmissions) * 100) 
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+    
+    const averageFeatureCount = submissions.reduce((sum, s) => 
+      sum + s.costCalculation.selectedFeatures.length, 0) / totalSubmissions;
+    
+    // Cost range distribution
+    const costRangeDistribution = submissions.reduce((acc, submission) => {
+      const range = submission.submissionMetrics.costRange || 'unknown';
+      acc[range] = (acc[range] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    // Device type distribution
+    const deviceTypeDistribution = submissions.reduce((acc, submission) => {
+      const device = submission.submissionMetrics.deviceType || 'unknown';
+      acc[device] = (acc[device] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    // Top timezones
+    const timezoneCounts = submissions.reduce((acc, submission) => {
+      const timezone = submission.submissionMetrics.timezone || 'unknown';
+      acc[timezone] = (acc[timezone] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const topTimezones = Object.entries(timezoneCounts)
+      .map(([timezone, count]) => ({ timezone, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    
+    // Partner engagement metrics
+    const partnerEngagementMetrics = topPartners.map(partner => {
+      const partnerSubmissions = submissions.filter(s => 
+        s.presalesInfo.partnerName === partner.name
+      );
+      
+      const averageCost = partnerSubmissions.length > 0
+        ? partnerSubmissions.reduce((sum, s) => sum + s.submissionMetrics.totalEstimatedCost, 0) / partnerSubmissions.length
+        : 0;
+      
+      const averageTimeSpent = partnerSubmissions.filter(s => s.submissionMetrics.timeSpentOnForm).length > 0
+        ? partnerSubmissions.reduce((sum, s) => sum + (s.submissionMetrics.timeSpentOnForm || 0), 0) / partnerSubmissions.length
+        : 0;
+      
+      const configCounts = partnerSubmissions.reduce((acc, s) => {
+        const config = s.submissionMetrics.configurationSize;
+        acc[config] = (acc[config] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const popularConfigurations = Object.entries(configCounts)
+        .map(([config, count]) => ({ config, count }))
+        .sort((a, b) => b.count - a.count);
+      
+      return {
+        partnerName: partner.name,
+        totalSubmissions: partner.count,
+        averageCost,
+        averageTimeSpent,
+        popularConfigurations,
+      };
+    });
+    
+    // Form completion stats
+    const completionRates = submissions.filter(s => s.submissionMetrics.formCompletionRate)
+      .map(s => s.submissionMetrics.formCompletionRate || 0);
+    const averageCompletionRate = completionRates.length > 0
+      ? completionRates.reduce((sum, rate) => sum + rate, 0) / completionRates.length
+      : 0;
+    
+    const abandonmentCounts = submissions.reduce((acc, submission) => {
+      const point = submission.submissionMetrics.abandonmentPoint;
+      if (point) {
+        acc[point] = (acc[point] || 0) + 1;
+      }
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const commonAbandonmentPoints = Object.entries(abandonmentCounts)
+      .map(([point, count]) => ({ point, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    
+    const errorCounts = submissions.reduce((acc, submission) => {
+      submission.submissionMetrics.validationErrors?.forEach(error => {
+        acc[error] = (acc[error] || 0) + 1;
+      });
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const mostCommonValidationErrors = Object.entries(errorCounts)
+      .map(([error, count]) => ({ error, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+    
+    // Time-based trends
+    const dailyStats = submissions.reduce((acc, submission) => {
+      const date = submission.submissionMetrics.submittedAt.toISOString().split('T')[0];
+      if (!acc[date]) {
+        acc[date] = { count: 0, totalValue: 0 };
+      }
+      acc[date].count++;
+      acc[date].totalValue += submission.submissionMetrics.totalEstimatedCost;
+      return acc;
+    }, {} as Record<string, { count: number; totalValue: number }>);
+    
+    const daily = Object.entries(dailyStats)
+      .map(([date, stats]) => ({ date, count: stats.count, totalValue: stats.totalValue }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    
+    const hourlyStats = submissions.reduce((acc, submission) => {
+      const hour = submission.submissionMetrics.submittedAt.getHours();
+      acc[hour] = (acc[hour] || 0) + 1;
+      return acc;
+    }, {} as Record<number, number>);
+    
+    const hourly = Array.from({ length: 24 }, (_, hour) => ({
+      hour,
+      count: hourlyStats[hour] || 0,
+    }));
+    
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayOfWeekStats = submissions.reduce((acc, submission) => {
+      const dayOfWeek = submission.submissionMetrics.submittedAt.getDay();
+      const dayName = dayNames[dayOfWeek];
+      acc[dayName] = (acc[dayName] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const byDayOfWeek = dayNames.map(day => ({
+      day,
+      count: dayOfWeekStats[day] || 0,
+    }));
+    
     return {
       totalSubmissions,
       submissionsByConfig,
@@ -156,6 +364,26 @@ export class MemStorage implements IStorage {
       topPartners,
       submissionsLastWeek,
       submissionsLastMonth,
+      
+      // Enhanced business intelligence metrics
+      averageTimeSpentOnForm,
+      conversionRate: 100, // Placeholder - would need session tracking for real conversion rate
+      popularFeatures,
+      averageFeatureCount,
+      costRangeDistribution,
+      deviceTypeDistribution,
+      topTimezones,
+      partnerEngagementMetrics,
+      formCompletionStats: {
+        averageCompletionRate,
+        commonAbandonmentPoints,
+        mostCommonValidationErrors,
+      },
+      submissionTrends: {
+        daily,
+        hourly,
+        byDayOfWeek,
+      },
     };
   }
 

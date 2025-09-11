@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Cloud, Download, FileText, Moon, Sun } from "lucide-react";
+import { Cloud, Download, FileText, Moon, Sun, BarChart3 } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { useTheme } from "next-themes";
 
 interface AppHeaderProps {
@@ -11,6 +12,7 @@ interface AppHeaderProps {
 
 export default function AppHeader({ selectedConfig, onExportPDF, onExportCSV }: AppHeaderProps) {
   const { theme, setTheme } = useTheme();
+  const [location] = useLocation();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,6 +33,19 @@ export default function AppHeader({ selectedConfig, onExportPDF, onExportCSV }: 
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Navigation */}
+          <Link href="/metrics">
+            <Button
+              variant={location === "/metrics" ? "default" : "ghost"}
+              size="sm"
+              className="flex items-center gap-2"
+              data-testid="link-metrics-dashboard"
+            >
+              <BarChart3 className="h-4 w-4" />
+              <span className="hidden md:inline">Analytics</span>
+            </Button>
+          </Link>
+          
           {selectedConfig && (
             <>
               <Button
