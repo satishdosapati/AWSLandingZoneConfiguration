@@ -8,13 +8,13 @@ export default function ConfigurationCardExample() {
         config={landingZoneConfigurations[0]}
         value="very-small"
         isSelected={true}
-        onSelect={(value) => console.log('Selected:', value)}
+        onSelect={() => {}}
       />
       <ConfigurationCard 
         config={landingZoneConfigurations[1]}
         value="small"
         isSelected={false}
-        onSelect={(value) => console.log('Selected:', value)}
+        onSelect={() => {}}
       />
     </div>
   );

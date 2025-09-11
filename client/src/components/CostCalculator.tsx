@@ -1,12 +1,32 @@
+/**
+ * Cost Calculator Component
+ * 
+ * Interactive cost estimation tool that provides real-time pricing updates
+ * based on selected AWS Landing Zone configuration and resource requirements.
+ * Includes infrastructure, professional services, and managed services costs.
+ * 
+ * Features:
+ * - Interactive sliders for EC2 instances and storage customization
+ * - Real-time cost breakdown by category (infrastructure, professional services, managed services)
+ * - Form submission with validation and error handling
+ * - PDF and CSV export functionality
+ * - Responsive sticky positioning for mobile/desktop views
+ * 
+ * @version 1.0.0
+ */
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LandingZoneConfig } from "@shared/schema";
-import { calculateCosts } from "@/utils/costCalculations";
+import { calculateCosts } from "@shared/costCalculations";
 import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Props interface for CostCalculator component
+ */
 interface CostCalculatorProps {
   selectedConfig: LandingZoneConfig | null;
   selectedFeatures: string[];

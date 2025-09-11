@@ -100,12 +100,20 @@ export const landingZoneSubmissionSchema = z.object({
   submissionMetrics: submissionMetricsSchema,
 });
 
-// Insert schemas using drizzle-zod
+// Insert schemas using drizzle-zod - server-computed fields made optional
 export const insertPresalesInfoSchema = presalesInfoSchema;
 export const insertSubmissionMetricsSchema = submissionMetricsSchema.omit({ 
   submissionId: true, 
-  submittedAt: true 
-}); // Omit auto-generated fields
+  submittedAt: true,
+  configurationSize: true, // Server-computed
+  totalFeaturesSelected: true, // Server-computed
+  totalEstimatedCost: true // Server-computed
+}).extend({
+  // Make server-computed fields optional for inserts
+  configurationSize: z.enum(["very-small", "small", "medium", "large"]).optional(),
+  totalFeaturesSelected: z.number().min(0).optional(),
+  totalEstimatedCost: z.number().min(0).optional(),
+});
 export const insertLandingZoneSubmissionSchema = landingZoneSubmissionSchema.omit({
   submissionMetrics: true
 }).extend({

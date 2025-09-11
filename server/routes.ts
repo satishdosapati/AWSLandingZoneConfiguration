@@ -17,11 +17,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // POST /api/submissions - Store new landing zone submission
   app.post('/api/submissions', async (req, res) => {
+    const startTime = Date.now();
+    console.log('[SUBMISSION] Request received', { timestamp: new Date().toISOString() });
+    
     try {
-      console.log('Received submission request:', req.body);
-      
       // Validate request body using Zod schema
       const validatedData = insertLandingZoneSubmissionSchema.parse(req.body);
+      console.log('[SUBMISSION] Validation successful', { 
+        configSize: validatedData.costCalculation.selectedConfig,
+        featuresCount: validatedData.costCalculation.selectedFeatures.length
+      });
       
       // Find the selected configuration
       const selectedConfig = landingZoneConfigurations.find(
@@ -78,7 +83,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store the submission
       const storedSubmission = await storage.createSubmission(submissionToStore);
       
-      console.log('Submission stored successfully:', storedSubmission.submissionMetrics.submissionId);
+      console.log('[SUBMISSION] Successfully stored', { 
+        submissionId: storedSubmission.submissionMetrics.submissionId,
+        processingTime: Date.now() - startTime,
+        totalCost: costBreakdown.totalFirstYearCost
+      });
       
       res.status(201).json({
         success: true,
@@ -87,15 +96,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
     } catch (error) {
-      console.error('Error storing submission:', error);
-      
       if (error instanceof z.ZodError) {
+        console.log('[SUBMISSION] Validation failed', { 
+          errors: error.errors,
+          processingTime: Date.now() - startTime
+        });
         return res.status(400).json({
           error: 'Validation failed',
           details: error.errors,
         });
       }
       
+      console.error('[SUBMISSION] Storage failed', { 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        processingTime: Date.now() - startTime
+      });
       res.status(500).json({ 
         error: 'Internal server error while storing submission' 
       });
@@ -140,7 +155,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
     } catch (error) {
-      console.error('Error retrieving submissions:', error);
       res.status(500).json({ 
         error: 'Internal server error while retrieving submissions' 
       });
@@ -158,7 +172,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
     } catch (error) {
-      console.error('Error retrieving submission stats:', error);
       res.status(500).json({ 
         error: 'Internal server error while retrieving statistics' 
       });
@@ -190,7 +203,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
     } catch (error) {
-      console.error('Error retrieving submission:', error);
       res.status(500).json({ 
         error: 'Internal server error while retrieving submission' 
       });

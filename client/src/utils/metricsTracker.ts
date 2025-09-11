@@ -183,7 +183,7 @@ class MetricsTracker {
   }
 
   // Generate comprehensive metrics for submission
-  generateSubmissionMetrics(totalCost: number, vmCount: number, storageTB: number): any {
+  generateSubmissionMetrics(totalCost: number, vmCount: number, storageTB: number): Record<string, unknown> {
     const timeSpentOnForm = Math.floor((Date.now() - this.startTime) / 1000);
     
     return {
@@ -227,7 +227,7 @@ class MetricsTracker {
   }
 
   // Generate abandonment metrics (for analytics tracking)
-  generateAbandonmentMetrics(): any {
+  generateAbandonmentMetrics(): Record<string, unknown> {
     return {
       sessionId: this.sessionId,
       abandonmentPoint: this.state.abandonmentPoint || 'unknown',
@@ -245,7 +245,7 @@ export const metricsTracker = new MetricsTracker();
 
 // Utility function to track form section progress
 export const calculateFormSections = (
-  presalesInfo: any, 
+  presalesInfo: Record<string, unknown>, 
   selectedConfig: string, 
   selectedFeatures: string[]
 ): { completed: number; total: number } => {

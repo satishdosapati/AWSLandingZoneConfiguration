@@ -5,8 +5,8 @@ export default function AppHeaderExample() {
     <div>
       <AppHeader 
         selectedConfig="medium"
-        onExportPDF={() => console.log('Export PDF triggered')}
-        onExportCSV={() => console.log('Export CSV triggered')}
+        onExportPDF={() => {}}
+        onExportCSV={() => {}}
       />
       <div className="p-6 text-center text-muted-foreground">
         Header with export options when configuration is selected

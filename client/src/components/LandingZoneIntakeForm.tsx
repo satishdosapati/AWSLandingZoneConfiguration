@@ -1,3 +1,21 @@
+/**
+ * AWS Landing Zone Configuration Intake Form
+ * 
+ * Main component for collecting customer requirements and generating AWS Landing Zone
+ * configurations with cost estimates. Handles presales information collection,
+ * configuration selection, feature customization, and comprehensive metrics tracking.
+ * 
+ * Features:
+ * - Multi-step form with validation using react-hook-form and Zod
+ * - Real-time cost calculation and configuration updates
+ * - Comprehensive user behavior metrics collection
+ * - Configuration export to PDF/CSV formats
+ * - Responsive design with tabs for different form sections
+ * 
+ * @version 1.0.0
+ * @author AWS Landing Zone Configuration Tool
+ */
+
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
@@ -16,10 +34,14 @@ import ConfigurationCard from "./ConfigurationCard";
 import CostCalculator from "./CostCalculator";
 import ConfigurationDetails from "./ConfigurationDetails";
 import FeatureSelector from "./FeatureSelector";
-import { landingZoneConfigurations, LandingZoneConfig, presalesInfoSchema, type PresalesInfo } from "@shared/schema";
-import { CheckCircle, Settings, FileText, User } from "lucide-react";
+import { landingZoneConfigurations, LandingZoneConfig, presalesInfoSchema, type PresalesInfo, type InsertLandingZoneSubmission } from "@shared/schema";
+import { CheckCircle, Settings, User } from "lucide-react";
 import { metricsTracker, calculateFormSections } from "@/utils/metricsTracker";
 
+/**
+ * Main AWS Landing Zone intake form component
+ * Orchestrates the entire configuration selection and submission process
+ */
 export default function LandingZoneIntakeForm() {
   const [, setLocation] = useLocation();
   const [selectedConfig, setSelectedConfig] = useState<string>("");
@@ -89,24 +111,20 @@ export default function LandingZoneIntakeForm() {
   };
 
   const handleExportPDF = () => {
-    console.log('Export PDF functionality - to be implemented');
-    // TODO: Implement PDF export functionality
+    // PDF export functionality handled through SummaryPage
   };
 
   const handleExportCSV = () => {
-    console.log('Export CSV functionality - to be implemented');  
-    // TODO: Implement CSV export functionality
+    // CSV export functionality handled through SummaryPage
   };
 
   // Mutation for submitting form data to API
   const submitMutation = useMutation({
-    mutationFn: async (submissionData: any) => {
+    mutationFn: async (submissionData: InsertLandingZoneSubmission) => {
       const response = await apiRequest('POST', '/api/submissions', submissionData);
       return await response.json();
     },
     onSuccess: (data, variables) => {
-      console.log('Form submitted successfully:', data);
-      
       toast({
         title: "Form submitted successfully!",
         description: `Submission ID: ${data.submissionId}`,
@@ -129,8 +147,6 @@ export default function LandingZoneIntakeForm() {
       }
     },
     onError: (error) => {
-      console.error('Error submitting form:', error);
-      
       toast({
         title: "Submission failed",
         description: "Please check your inputs and try again.",
@@ -171,20 +187,13 @@ export default function LandingZoneIntakeForm() {
             customStorageTB,
           },
           presalesInfo: presalesData,
-          submissionMetrics: {
-            ...enhancedMetrics,
-            configurationSize: selectedConfiguration.size,
-            totalFeaturesSelected: selectedFeatures.length,
-            totalEstimatedCost: costBreakdown.totalFirstYearCost, // Add the missing required field
-          },
+          submissionMetrics: enhancedMetrics,
         };
         
         // Submit to API
         submitMutation.mutate(submissionData);
       }
     }, (errors) => {
-      console.log('Form validation errors:', errors);
-      
       // Track validation errors for metrics
       Object.keys(errors).forEach(fieldName => {
         metricsTracker.trackValidationError(fieldName);

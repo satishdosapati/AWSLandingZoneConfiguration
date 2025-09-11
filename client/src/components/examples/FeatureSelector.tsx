@@ -13,7 +13,6 @@ export default function FeatureSelectorExample() {
     } else {
       setSelectedFeatures(prev => prev.filter(id => id !== featureId));
     }
-    console.log('Feature toggled:', featureId, enabled);
   };
 
   return (

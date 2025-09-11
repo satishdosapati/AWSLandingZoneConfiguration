@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature } from "@shared/schema";
-import { calculateCosts, CostBreakdown } from "@/utils/costCalculations";
+import { calculateCosts, CostBreakdown } from "@shared/costCalculations";
 import { getPricingVersion } from "@shared/pricing-loader";
 import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User } from "lucide-react";
 
@@ -16,7 +16,7 @@ interface SummaryData {
   selectedFeatures: string[];
   customEC2Count: number;
   customStorageTB: number;
-  presalesEmail?: string;
+  presalesEngineerEmail?: string;
   partnerName?: string;
   customerName?: string;
   awsReferenceIds?: string;
@@ -298,7 +298,7 @@ const ConfigurationPDFDocument = ({
   costs: CostBreakdown;
   customEC2Count: number;
   customStorageTB: number;
-  presalesData: { presalesEmail?: string; partnerName?: string; customerName?: string; awsReferenceIds?: string; };
+  presalesData: { presalesEngineerEmail?: string; partnerName?: string; customerName?: string; awsReferenceIds?: string; };
 }) => {
   const pricingInfo = getPricingVersion();
   const currentDate = new Date().toLocaleDateString();
@@ -315,15 +315,15 @@ const ConfigurationPDFDocument = ({
         </View>
 
         {/* Enhanced Presales Information Section */}
-        {(presalesData.presalesEmail || presalesData.partnerName || presalesData.customerName || presalesData.awsReferenceIds) && (
+        {(presalesData.presalesEngineerEmail || presalesData.partnerName || presalesData.customerName || presalesData.awsReferenceIds) && (
           <View style={pdfStyles.presalesSection}>
             <Text style={pdfStyles.presalesTitle}>PROJECT INFORMATION</Text>
             
             <View style={pdfStyles.presalesGrid}>
-              {presalesData.presalesEmail && (
+              {presalesData.presalesEngineerEmail && (
                 <View style={pdfStyles.presalesColumn}>
                   <Text style={pdfStyles.presalesLabel}>Presales Engineer</Text>
-                  <Text style={pdfStyles.presalesValue}>{presalesData.presalesEmail}</Text>
+                  <Text style={pdfStyles.presalesValue}>{presalesData.presalesEngineerEmail}</Text>
                 </View>
               )}
               
@@ -492,7 +492,7 @@ export default function SummaryPage() {
       const featuresParam = urlParams.get('features');
       const ec2Count = urlParams.get('ec2');
       const storageTB = urlParams.get('storage');
-      const presalesEmail = urlParams.get('presalesEmail');
+      const presalesEngineerEmail = urlParams.get('presalesEngineerEmail');
       const partnerName = urlParams.get('partnerName');
       const customerName = urlParams.get('customerName');
       const awsReferenceIds = urlParams.get('awsReferenceIds');
@@ -503,7 +503,7 @@ export default function SummaryPage() {
           selectedFeatures: featuresParam ? featuresParam.split(',') : [],
           customEC2Count: parseInt(ec2Count, 10),
           customStorageTB: parseInt(storageTB, 10),
-          presalesEmail: presalesEmail || undefined,
+          presalesEngineerEmail: presalesEngineerEmail || undefined,
           partnerName: partnerName || undefined,
           customerName: customerName || undefined,
           awsReferenceIds: awsReferenceIds || undefined,
@@ -598,7 +598,7 @@ export default function SummaryPage() {
                     customEC2Count={summaryData.customEC2Count}
                     customStorageTB={summaryData.customStorageTB}
                     presalesData={{
-                      presalesEmail: summaryData.presalesEmail,
+                      presalesEngineerEmail: summaryData.presalesEngineerEmail,
                       partnerName: summaryData.partnerName,
                       customerName: summaryData.customerName,
                       awsReferenceIds: summaryData.awsReferenceIds,
@@ -628,7 +628,7 @@ export default function SummaryPage() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
               {/* Presales Information */}
-              {(summaryData.presalesEmail || summaryData.partnerName || summaryData.customerName) && (
+              {(summaryData.presalesEngineerEmail || summaryData.partnerName || summaryData.customerName) && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -639,11 +639,11 @@ export default function SummaryPage() {
                   <CardContent>
                     <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
                       <div className="grid md:grid-cols-2 gap-4 text-sm">
-                        {summaryData.presalesEmail && (
+                        {summaryData.presalesEngineerEmail && (
                           <div>
                             <h4 className="font-semibold mb-1">Presales Engineer</h4>
                             <p className="text-muted-foreground" data-testid="text-presales-email">
-                              {summaryData.presalesEmail}
+                              {summaryData.presalesEngineerEmail}
                             </p>
                           </div>
                         )}
@@ -879,6 +879,12 @@ export default function SummaryPage() {
                         costs={costs}
                         customEC2Count={summaryData.customEC2Count}
                         customStorageTB={summaryData.customStorageTB}
+                        presalesData={{
+                          presalesEngineerEmail: summaryData.presalesEngineerEmail,
+                          partnerName: summaryData.partnerName,
+                          customerName: summaryData.customerName,
+                          awsReferenceIds: summaryData.awsReferenceIds,
+                        }}
                       />
                     }
                     fileName={`aws-landing-zone-${config.size}-configuration.pdf`}

@@ -8,6 +8,26 @@ import { Feature, LandingZoneConfig, availableFeatures } from "@shared/schema";
 import { ChevronDown, Shield, Network, Cog, Eye, Building2, DollarSign, Info } from "lucide-react";
 import { useState } from "react";
 
+/**
+ * Feature Selection Component
+ * 
+ * Provides an interactive interface for selecting AWS Landing Zone features
+ * organized by categories (foundation, security, networking, automation, monitoring).
+ * Supports mandatory vs optional features with cost impact visualization.
+ * 
+ * Features:
+ * - Collapsible feature categories with icons and color coding
+ * - Real-time cost impact calculation per category
+ * - Mandatory feature enforcement (cannot be disabled)
+ * - Detailed tooltips with AWS service definitions
+ * - Feature availability filtering based on configuration size
+ * 
+ * @version 1.0.0
+ */
+
+/**
+ * Props interface for FeatureSelector component
+ */
 interface FeatureSelectorProps {
   selectedConfig: LandingZoneConfig;
   selectedFeatures: string[];

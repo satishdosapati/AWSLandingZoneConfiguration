@@ -1,5 +1,19 @@
+/**
+ * AWS Landing Zone Cost Calculation Engine
+ * 
+ * Core cost calculation utilities for AWS Landing Zone configurations.
+ * Handles complex pricing logic for infrastructure, professional services,
+ * and managed services across different configuration sizes.
+ * 
+ * @version 1.0.0
+ */
+
 import { LandingZoneConfig, Feature, availableFeatures } from "./schema";
 
+/**
+ * Comprehensive cost breakdown interface for AWS Landing Zone configurations
+ * Provides detailed cost analysis across all service categories
+ */
 export interface CostBreakdown {
   // Infrastructure costs (monthly)
   baseInfrastructureCost: number;
@@ -21,6 +35,21 @@ export interface CostBreakdown {
   totalFirstYearCost: number;
 }
 
+/**
+ * Calculate comprehensive costs for AWS Landing Zone configuration
+ * 
+ * Provides detailed cost breakdown including:
+ * - Infrastructure costs (base + feature-specific)
+ * - Professional services (implementation costs)  
+ * - Managed services (ongoing EC2 and storage management)
+ * - Total monthly and first-year costs
+ * 
+ * @param config - The selected Landing Zone configuration
+ * @param selectedFeatures - Array of selected feature IDs
+ * @param ec2Count - Number of EC2 instances to manage
+ * @param storageTB - Amount of storage in TB to manage
+ * @returns Complete cost breakdown with monthly and annual totals
+ */
 export function calculateCosts(
   config: LandingZoneConfig,
   selectedFeatures: string[],
