@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ConfigurationCard from '../ConfigurationCard'
+import { RadioGroup } from '@/components/ui/radio-group'
 import { landingZoneConfigurations } from '@shared/schema'
 
 describe('ConfigurationCard', () => {
@@ -13,7 +14,11 @@ describe('ConfigurationCard', () => {
   }
 
   it('renders configuration card with correct information', () => {
-    render(<ConfigurationCard {...defaultProps} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} />
+      </RadioGroup>
+    )
     
     expect(screen.getByText(/Very Small/)).toBeInTheDocument()
     expect(screen.getByText('VERY SMALL')).toBeInTheDocument()
@@ -23,21 +28,33 @@ describe('ConfigurationCard', () => {
   })
 
   it('shows selected state correctly', () => {
-    render(<ConfigurationCard {...defaultProps} isSelected={true} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} isSelected={true} />
+      </RadioGroup>
+    )
     
     const card = screen.getByTestId('card-config-very-small')
     expect(card).toHaveClass('ring-2', 'ring-primary', 'border-primary')
   })
 
   it('does not show selected styles when not selected', () => {
-    render(<ConfigurationCard {...defaultProps} isSelected={false} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} isSelected={false} />
+      </RadioGroup>
+    )
     
     const card = screen.getByTestId('card-config-very-small')
     expect(card).not.toHaveClass('ring-2', 'ring-primary', 'border-primary')
   })
 
   it('displays correct size badge variant', () => {
-    render(<ConfigurationCard {...defaultProps} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} />
+      </RadioGroup>
+    )
     
     const badge = screen.getByText('VERY SMALL')
     expect(badge.parentElement).toHaveClass('bg-secondary')
@@ -49,14 +66,22 @@ describe('ConfigurationCard', () => {
       description: 'This is a very long description that should be truncated after 60 characters to prevent layout issues'
     }
     
-    render(<ConfigurationCard {...defaultProps} config={longDescConfig} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} config={longDescConfig} />
+      </RadioGroup>
+    )
     
     expect(screen.getByText(/This is a very long description that should be truncated/)).toBeInTheDocument()
     expect(screen.getByText(/\.\.\./)).toBeInTheDocument()
   })
 
   it('is accessible with proper labels and roles', () => {
-    render(<ConfigurationCard {...defaultProps} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} />
+      </RadioGroup>
+    )
     
     const label = screen.getByTestId('label-config-very-small')
     expect(label).toBeInTheDocument()
@@ -69,7 +94,11 @@ describe('ConfigurationCard', () => {
 
   it('can be clicked to select', async () => {
     const user = userEvent.setup()
-    render(<ConfigurationCard {...defaultProps} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} />
+      </RadioGroup>
+    )
     
     const label = screen.getByTestId('label-config-very-small')
     await user.click(label)
@@ -87,7 +116,11 @@ describe('ConfigurationCard', () => {
     ]
 
     configs.forEach(({ config }) => {
-      const { unmount } = render(<ConfigurationCard {...defaultProps} config={config} value={config.size} />)
+      const { unmount } = render(
+        <RadioGroup>
+          <ConfigurationCard {...defaultProps} config={config} value={config.size} />
+        </RadioGroup>
+      )
       expect(screen.getByTestId(`card-config-${config.size}`)).toBeInTheDocument()
       unmount()
     })
@@ -95,7 +128,11 @@ describe('ConfigurationCard', () => {
 
   it('handles hover states correctly', async () => {
     const user = userEvent.setup()
-    render(<ConfigurationCard {...defaultProps} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} />
+      </RadioGroup>
+    )
     
     const card = screen.getByTestId('card-config-very-small')
     expect(card).toHaveClass('hover-elevate')
@@ -106,7 +143,11 @@ describe('ConfigurationCard', () => {
   })
 
   it('displays cost information correctly', () => {
-    render(<ConfigurationCard {...defaultProps} />)
+    render(
+      <RadioGroup>
+        <ConfigurationCard {...defaultProps} />
+      </RadioGroup>
+    )
     
     expect(screen.getByText('Base Cost')).toBeInTheDocument()
     expect(screen.getByText(/\$.*\/mo/)).toBeInTheDocument()

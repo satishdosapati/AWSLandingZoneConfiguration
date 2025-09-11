@@ -4,6 +4,30 @@ import userEvent from '@testing-library/user-event'
 import FeatureSelector from '../FeatureSelector'
 import { landingZoneConfigurations } from '@shared/schema'
 
+// Mock the cost calculation utility
+vi.mock('@/utils/costCalculations', () => ({
+  calculateCosts: vi.fn(() => ({
+    baseInfrastructureCost: 1000,
+    featuresInfrastructureCost: 500,
+    totalInfrastructureCost: 1500,
+    baseProfessionalServicesCost: 5000,
+    featuresProfessionalServicesCost: 2000,
+    totalProfessionalServicesCost: 7000,
+    managedServicesEC2Cost: 150,
+    managedServicesStorageCost: 300,
+    totalManagedServicesCost: 450,
+    totalMonthlyCost: 1950,
+    totalFirstYearCost: 30400
+  })),
+  getFeaturesByCategory: vi.fn(() => ({
+    foundation: [],
+    security: [],
+    networking: [],
+    automation: [],
+    monitoring: []
+  }))
+}))
+
 describe('FeatureSelector', () => {
   const mockConfig = landingZoneConfigurations[2] // medium config with many features
   const mockOnFeatureToggle = vi.fn()

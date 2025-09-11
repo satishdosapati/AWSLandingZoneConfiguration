@@ -6,9 +6,17 @@ import LandingZoneIntakeForm from '../LandingZoneIntakeForm'
 // Mock the cost calculation utility
 vi.mock('@/utils/costCalculations', () => ({
   calculateCosts: vi.fn(() => ({
-    infraCost: { base: 1000, features: 500, custom: 200, total: 1700 },
-    professionalServicesCost: { base: 5000, features: 2000, total: 7000 },
-    managedServicesCost: { total: 800 }
+    baseInfrastructureCost: 1000,
+    featuresInfrastructureCost: 500,
+    totalInfrastructureCost: 1700,
+    baseProfessionalServicesCost: 5000,
+    featuresProfessionalServicesCost: 2000,
+    totalProfessionalServicesCost: 7000,
+    managedServicesEC2Cost: 300,
+    managedServicesStorageCost: 500,
+    totalManagedServicesCost: 800,
+    totalMonthlyCost: 2500,
+    totalFirstYearCost: 37000
   }))
 }))
 
@@ -27,10 +35,10 @@ describe('LandingZoneIntakeForm', () => {
   it('displays all configuration options', () => {
     render(<LandingZoneIntakeForm />)
     
-    expect(screen.getByText(/Very Small/)).toBeInTheDocument()
-    expect(screen.getByText(/Small/)).toBeInTheDocument()  
-    expect(screen.getByText(/Medium/)).toBeInTheDocument()
-    expect(screen.getByText(/Large/)).toBeInTheDocument()
+    expect(screen.getByText('Very Small')).toBeInTheDocument()
+    expect(screen.getByText('Small')).toBeInTheDocument()  
+    expect(screen.getByText('Medium')).toBeInTheDocument()
+    expect(screen.getByText('Large')).toBeInTheDocument()
   })
 
   it('shows "Choose Your Configuration" section', () => {
@@ -55,9 +63,9 @@ describe('LandingZoneIntakeForm', () => {
     const verySmallConfig = screen.getByTestId('label-config-very-small')
     await user.click(verySmallConfig)
     
-    // Should show configuration details tab
+    // Should show tabs container
     await waitFor(() => {
-      expect(screen.getByText('Configuration Details')).toBeInTheDocument()
+      expect(screen.getByRole('tablist')).toBeInTheDocument()
     })
     
     // Should show cost calculator
@@ -74,8 +82,8 @@ describe('LandingZoneIntakeForm', () => {
     
     await waitFor(() => {
       expect(screen.getByRole('tablist')).toBeInTheDocument()
-      expect(screen.getByRole('tab', { name: /features/i })).toBeInTheDocument()
-      expect(screen.getByRole('tab', { name: /details/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /overview/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /technical details/i })).toBeInTheDocument()
     })
   })
 
@@ -137,11 +145,11 @@ describe('LandingZoneIntakeForm', () => {
     await user.click(smallConfig)
     
     await waitFor(() => {
-      expect(screen.getByRole('tab', { name: /details/i })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: /technical details/i })).toBeInTheDocument()
     })
     
     // Click on details tab
-    const detailsTab = screen.getByRole('tab', { name: /details/i })
+    const detailsTab = screen.getByRole('tab', { name: /technical details/i })
     await user.click(detailsTab)
     
     await waitFor(() => {
@@ -177,8 +185,8 @@ describe('LandingZoneIntakeForm', () => {
     await user.click(verySmallConfig)
     
     await waitFor(async () => {
-      const pdfButton = screen.getByTestId('button-export-pdf')
-      const csvButton = screen.getByTestId('button-export-csv')
+      const pdfButton = screen.getByTestId('button-export-pdf-form')
+      const csvButton = screen.getByTestId('button-export-csv-form')
       
       await user.click(pdfButton)
       expect(consoleSpy).toHaveBeenCalledWith('Export PDF functionality - to be implemented')
@@ -240,9 +248,9 @@ describe('LandingZoneIntakeForm', () => {
     
     await waitFor(() => {
       // Should display calculated costs
-      expect(screen.getByTestId('text-infra-total')).toBeInTheDocument()
-      expect(screen.getByTestId('text-prof-services-total')).toBeInTheDocument() 
-      expect(screen.getByTestId('text-managed-services-total')).toBeInTheDocument()
+      expect(screen.getByTestId('text-total-infrastructure')).toBeInTheDocument()
+      expect(screen.getByTestId('text-total-professional')).toBeInTheDocument() 
+      expect(screen.getByTestId('text-total-managed')).toBeInTheDocument()
     })
   })
 
