@@ -101,7 +101,7 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
             <span className="text-xs text-muted-foreground">Hover over feature names to see AWS service definitions.</span>
           </CardDescription>
         </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {Object.entries(featuresByCategory).map(([category, features]) => {
           const costs = calculateFeatureCosts(features);
           return (
@@ -111,10 +111,10 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
               onOpenChange={() => toggleCategory(category)}
             >
               <CollapsibleTrigger
-                className="flex w-full items-center justify-between p-3 hover-elevate rounded-lg border"
+                className="flex w-full items-center justify-between p-2 hover-elevate rounded-lg border"
                 data-testid={`button-category-${category}`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   {getCategoryIcon(category)}
                   <div className="text-left">
                     <h4 className="font-semibold capitalize">{category}</h4>
@@ -136,8 +136,8 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                 </div>
               </CollapsibleTrigger>
               
-              <CollapsibleContent className="pt-2">
-                <div className="space-y-2 pl-4">
+              <CollapsibleContent className="pt-1">
+                <div className="space-y-1 pl-3">
                   {features.map((feature) => {
                     const isSelected = selectedFeatures.includes(feature.id);
                     const isMandatory = selectedConfig.mandatoryFeatures.includes(feature.id);
@@ -145,7 +145,7 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                     return (
                       <div
                         key={feature.id}
-                        className={`flex items-start gap-2 p-2 rounded-md border transition-colors ${
+                        className={`flex items-start gap-2 p-1.5 rounded-md border transition-colors ${
                           isSelected ? 'bg-muted/50' : ''
                         }`}
                       >
@@ -157,7 +157,7 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                           data-testid={`checkbox-feature-${feature.id}`}
                         />
                         
-                        <div className="flex-1 space-y-1">
+                        <div className="flex-1 space-y-0.5">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <Tooltip>
@@ -211,7 +211,7 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
               </CollapsibleContent>
               
               {category !== Object.keys(featuresByCategory)[Object.keys(featuresByCategory).length - 1] && (
-                <Separator className="mt-4" />
+                <Separator className="mt-2" />
               )}
             </Collapsible>
           );

@@ -53,29 +53,31 @@ export default function ConfigurationCard({ config, value, isSelected }: Configu
         data-testid={`label-config-${config.size}`}
       >
         <Card 
-          className={`transition-all duration-200 hover-elevate min-h-40 flex flex-col ${
+          className={`transition-all duration-200 hover-elevate ${
             isSelected ? "ring-2 ring-primary border-primary" : ""
           }`}
           data-testid={`card-config-${config.size}`}
         >
-          <CardHeader className="pb-3 flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {getSizeIcon(config.size)}
-                <CardTitle className="text-base font-semibold line-clamp-2">
-                  {config.name.replace(/Customers?/g, '').replace(/\([^)]*\)/, '').trim()}
-                </CardTitle>
-              </div>
-              <Badge variant={getSizeBadgeVariant(config.size) as any} className="text-xs">
-                {config.size.replace("-", " ").toUpperCase()}
-              </Badge>
+          <div className="flex items-center gap-3 p-3">
+            <div className="flex-shrink-0">
+              {getSizeIcon(config.size)}
             </div>
-            <CardDescription className="text-xs text-muted-foreground line-clamp-2 mt-1">
-              {config.description.length > 60 ? config.description.substring(0, 60) + '...' : config.description}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1 space-y-3">
-            <div className="space-y-2 text-xs">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <CardTitle className="text-lg font-semibold text-foreground">
+                    {config.name.replace(/Customers?/g, '').replace(/\([^)]*\)/, '').trim()}
+                  </CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                    {config.description}
+                  </CardDescription>
+                </div>
+                <Badge variant={getSizeBadgeVariant(config.size) as any} className="text-xs flex-shrink-0">
+                  {config.size.replace("-", " ").toUpperCase()}
+                </Badge>
+              </div>
+            </div>
+            <div className="flex-shrink-0 text-right space-y-1.5 text-sm">
               <div>
                 <h4 className="font-medium text-foreground">Base Cost</h4>
                 <p className="text-muted-foreground">${config.baseInfraCostPerMonth.toLocaleString()}/mo</p>
@@ -89,7 +91,7 @@ export default function ConfigurationCard({ config, value, isSelected }: Configu
                 <p className="text-muted-foreground">{config.availableFeatures.length} available</p>
               </div>
             </div>
-          </CardContent>
+          </div>
         </Card>
       </Label>
     </div>

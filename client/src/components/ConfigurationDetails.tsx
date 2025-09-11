@@ -84,12 +84,12 @@ export default function ConfigurationDetails({ config }: ConfigurationDetailsPro
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid gap-4">
+      <CardContent className="space-y-3">
+        <div className="grid gap-3">
           {detailSections.map((section, index) => {
             const IconComponent = section.icon;
             return (
-              <div key={section.key} className="space-y-3">
+              <div key={section.key} className="space-y-2">
                 <div className="flex items-center gap-2">
                   <IconComponent className="h-4 w-4 text-primary" />
                   <h4 className="font-semibold text-sm">{section.title}</h4>
@@ -103,12 +103,12 @@ export default function ConfigurationDetails({ config }: ConfigurationDetailsPro
           })}
         </div>
 
-        <div className="bg-muted/50 p-4 rounded-lg">
-          <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+        <div className="bg-muted/50 p-3 rounded-lg">
+          <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             Default Resource Allocation
           </h4>
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <span className="text-muted-foreground">Virtual Machines:</span>
               <span className="ml-2 font-mono">{config.defaultVMs}</span>

@@ -64,11 +64,11 @@ export default function CostCalculator({
             Customize resources for {selectedConfig.name}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
         {/* Resource Customization */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
                 <Server className="h-4 w-4" />
                 <span className="text-sm font-medium">EC2 Instances</span>
@@ -91,7 +91,7 @@ export default function CostCalculator({
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
                 <HardDrive className="h-4 w-4" />
                 <span className="text-sm font-medium">Storage (TB)</span>
@@ -117,14 +117,14 @@ export default function CostCalculator({
         <Separator />
 
         {/* Three Separate Cost Estimates */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* 1. Infrastructure Monthly Cost */}
-          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
               <Building className="h-4 w-4 text-blue-600" />
               <h4 className="font-semibold text-sm text-blue-900 dark:text-blue-100">Infrastructure (Monthly)</h4>
             </div>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Base Infrastructure</span>
                 <span className="font-mono">${costs.baseInfrastructureCost.toLocaleString()}</span>
@@ -144,12 +144,12 @@ export default function CostCalculator({
           </div>
 
           {/* 2. Professional Services (One-time) */}
-          <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="bg-green-50 dark:bg-green-950/20 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
               <Wrench className="h-4 w-4 text-green-600" />
               <h4 className="font-semibold text-sm text-green-900 dark:text-green-100">Professional Services (One-time)</h4>
             </div>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Base Implementation</span>
                 <span className="font-mono">${costs.baseProfessionalServicesCost.toLocaleString()}</span>
@@ -169,12 +169,12 @@ export default function CostCalculator({
           </div>
 
           {/* 3. Managed Services (Monthly) */}
-          <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="bg-purple-50 dark:bg-purple-950/20 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
               <Settings className="h-4 w-4 text-purple-600" />
               <h4 className="font-semibold text-sm text-purple-900 dark:text-purple-100">Managed Services (Monthly)</h4>
             </div>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">EC2 Management ({customEC2Count} instances)</span>
                 <span className="font-mono">${costs.managedServicesEC2Cost.toLocaleString()}</span>
@@ -194,8 +194,8 @@ export default function CostCalculator({
           </div>
 
           {/* Summary */}
-          <div className="bg-muted/50 p-4 rounded-lg">
-            <div className="space-y-2">
+          <div className="bg-muted/50 p-3 rounded-lg">
+            <div className="space-y-1.5">
               <div className="flex justify-between text-base font-semibold">
                 <span>Total Monthly Cost</span>
                 <span className="font-mono text-primary" data-testid="text-total-monthly">
@@ -212,7 +212,7 @@ export default function CostCalculator({
           </div>
         </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-3">
+        <CardFooter className="flex flex-col gap-2">
           <Button 
             onClick={onSubmit} 
             className="w-full" 
@@ -223,7 +223,7 @@ export default function CostCalculator({
             Submit Configuration
           </Button>
           
-          <div className="grid grid-cols-2 gap-2 w-full">
+          <div className="grid grid-cols-2 gap-1.5 w-full">
             <Button 
               variant="outline" 
               size="sm" 

@@ -66,20 +66,20 @@ export default function LandingZoneIntakeForm() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-4">AWS Landing Zone Configuration</h1>
+          <div className="text-center mb-4">
+            <h1 className="text-3xl font-bold mb-2">AWS Landing Zone Configuration</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Select the right AWS Landing Zone configuration for your organization. 
               Our tool provides detailed cost estimates and technical specifications.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-6">
+          <div className="grid lg:grid-cols-12 gap-4">
             {/* Configuration Selection */}
-            <div className="lg:col-span-8 space-y-4">
+            <div className="lg:col-span-8 space-y-3">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function LandingZoneIntakeForm() {
                   <RadioGroup 
                     value={selectedConfig} 
                     onValueChange={handleConfigSelection}
-                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+                    className="space-y-3"
                     data-testid="radiogroup-configurations"
                   >
                     {landingZoneConfigurations.map((config) => (
@@ -116,7 +116,7 @@ export default function LandingZoneIntakeForm() {
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="details">Technical Details</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="overview" className="mt-4">
+                  <TabsContent value="overview" className="mt-3">
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -128,12 +128,12 @@ export default function LandingZoneIntakeForm() {
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid md:grid-cols-2 gap-4 text-sm">
-                          <div className="space-y-2">
+                        <div className="grid md:grid-cols-2 gap-3 text-sm">
+                          <div className="space-y-1">
                             <h4 className="font-semibold">Account Structure</h4>
                             <p className="text-muted-foreground">{selectedConfiguration.accountStructure}</p>
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-1">
                             <h4 className="font-semibold">Default Resources</h4>
                             <p className="text-muted-foreground">
                               {selectedConfiguration.defaultVMs} VMs, {selectedConfiguration.defaultStorageTB}TB storage
@@ -143,7 +143,7 @@ export default function LandingZoneIntakeForm() {
                       </CardContent>
                     </Card>
                   </TabsContent>
-                  <TabsContent value="details" className="mt-4">
+                  <TabsContent value="details" className="mt-3">
                     <ConfigurationDetails config={selectedConfiguration} />
                   </TabsContent>
                 </Tabs>
@@ -151,7 +151,7 @@ export default function LandingZoneIntakeForm() {
 
               {/* Feature Selection */}
               {selectedConfiguration && (
-                <div className="mt-4">
+                <div className="mt-3">
                   <FeatureSelector
                     selectedConfig={selectedConfiguration}
                     selectedFeatures={selectedFeatures}
