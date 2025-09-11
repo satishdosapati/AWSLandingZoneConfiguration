@@ -25,6 +25,7 @@ const pdfStyles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 40,
     fontFamily: 'Helvetica',
+    lineHeight: 1.4,
   },
   header: {
     marginBottom: 30,
@@ -53,107 +54,162 @@ const pdfStyles = StyleSheet.create({
     color: '#6B7280',
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 25,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1B4B8C',
-    marginBottom: 10,
+    marginBottom: 12,
     borderBottom: '1px solid #E5E7EB',
-    paddingBottom: 5,
+    paddingBottom: 6,
   },
   configCard: {
     backgroundColor: '#F8FAFC',
     border: '1px solid #E2E8F0',
     borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
+    padding: 18,
+    marginBottom: 18,
   },
   configName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#1F2937',
-    marginBottom: 5,
+    marginBottom: 8,
+    lineHeight: 1.3,
   },
   configDescription: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#6B7280',
+    marginBottom: 12,
+    lineHeight: 1.4,
+  },
+  // New styles for better text layout
+  resourceContainer: {
     marginBottom: 8,
   },
+  resourceLabel: {
+    fontSize: 11,
+    color: '#4B5563',
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
+  resourceValue: {
+    fontSize: 11,
+    color: '#1F2937',
+    marginBottom: 8,
+    lineHeight: 1.5,
+    paddingLeft: 8,
+  },
+  // Improved layout for structured data
+  structureSection: {
+    marginBottom: 12,
+    paddingBottom: 8,
+    borderBottom: '1px solid #E5E7EB',
+  },
+  structureLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#374151',
+    marginBottom: 4,
+  },
+  structureValue: {
+    fontSize: 11,
+    color: '#6B7280',
+    lineHeight: 1.5,
+    marginBottom: 6,
+  },
+  // Legacy resourceRow for simple key-value pairs
   resourceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 3,
+    marginBottom: 6,
+    alignItems: 'flex-start',
   },
-  resourceLabel: {
-    fontSize: 10,
+  resourceRowLabel: {
+    fontSize: 11,
     color: '#4B5563',
-  },
-  resourceValue: {
-    fontSize: 10,
     fontWeight: 'bold',
+    width: '40%',
+  },
+  resourceRowValue: {
+    fontSize: 11,
     color: '#1F2937',
+    fontWeight: 'bold',
+    width: '55%',
+    textAlign: 'right',
   },
   featureItem: {
-    marginBottom: 8,
-    padding: 10,
+    marginBottom: 10,
+    padding: 12,
     backgroundColor: '#F0F9FF',
     borderLeft: '3px solid #0EA5E9',
+    borderRadius: 4,
   },
   featureName: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#0C4A6E',
-    marginBottom: 3,
+    marginBottom: 4,
+    lineHeight: 1.3,
   },
   featureDescription: {
     fontSize: 10,
     color: '#475569',
+    lineHeight: 1.4,
+    marginBottom: 3,
   },
   costSection: {
     backgroundColor: '#F8FAFC',
     border: '1px solid #E2E8F0',
     borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
+    padding: 18,
+    marginBottom: 18,
   },
   costTitle: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#1B4B8C',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   costRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    marginBottom: 6,
+    alignItems: 'center',
   },
   costLabel: {
     fontSize: 11,
     color: '#4B5563',
+    width: '65%',
   },
   costValue: {
     fontSize: 11,
     fontWeight: 'bold',
     color: '#1F2937',
+    width: '30%',
+    textAlign: 'right',
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderTop: '1px solid #D1D5DB',
-    paddingTop: 8,
-    marginTop: 8,
+    paddingTop: 10,
+    marginTop: 10,
+    alignItems: 'center',
   },
   totalLabel: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#1B4B8C',
+    width: '65%',
   },
   totalValue: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#1B4B8C',
+    width: '30%',
+    textAlign: 'right',
   },
   footer: {
     position: 'absolute',
@@ -167,6 +223,7 @@ const pdfStyles = StyleSheet.create({
     fontSize: 10,
     color: '#6B7280',
     textAlign: 'center',
+    lineHeight: 1.3,
   },
 });
 
@@ -204,21 +261,27 @@ const ConfigurationPDFDocument = ({
           <View style={pdfStyles.configCard}>
             <Text style={pdfStyles.configName}>{config.name}</Text>
             <Text style={pdfStyles.configDescription}>{config.description}</Text>
+            
+            {/* Account Structure - Using improved layout for long text */}
+            <View style={pdfStyles.structureSection}>
+              <Text style={pdfStyles.structureLabel}>Account Structure</Text>
+              <Text style={pdfStyles.structureValue}>{config.accountStructure}</Text>
+            </View>
+            
+            {/* Organization Structure - Using improved layout for long text */}
+            <View style={pdfStyles.structureSection}>
+              <Text style={pdfStyles.structureLabel}>Organizational Structure</Text>
+              <Text style={pdfStyles.structureValue}>{config.organizationalStructure}</Text>
+            </View>
+            
+            {/* Simple key-value pairs - Using improved resourceRow */}
             <View style={pdfStyles.resourceRow}>
-              <Text style={pdfStyles.resourceLabel}>Account Structure:</Text>
-              <Text style={pdfStyles.resourceValue}>{config.accountStructure}</Text>
+              <Text style={pdfStyles.resourceRowLabel}>EC2 Instances:</Text>
+              <Text style={pdfStyles.resourceRowValue}>{customEC2Count}</Text>
             </View>
             <View style={pdfStyles.resourceRow}>
-              <Text style={pdfStyles.resourceLabel}>Organization Structure:</Text>
-              <Text style={pdfStyles.resourceValue}>{config.organizationalStructure}</Text>
-            </View>
-            <View style={pdfStyles.resourceRow}>
-              <Text style={pdfStyles.resourceLabel}>EC2 Instances:</Text>
-              <Text style={pdfStyles.resourceValue}>{customEC2Count}</Text>
-            </View>
-            <View style={pdfStyles.resourceRow}>
-              <Text style={pdfStyles.resourceLabel}>Storage:</Text>
-              <Text style={pdfStyles.resourceValue}>{customStorageTB} TB</Text>
+              <Text style={pdfStyles.resourceRowLabel}>Storage:</Text>
+              <Text style={pdfStyles.resourceRowValue}>{customStorageTB} TB</Text>
             </View>
           </View>
         </View>
@@ -247,7 +310,7 @@ const ConfigurationPDFDocument = ({
             </View>
             <View style={pdfStyles.costRow}>
               <Text style={pdfStyles.costLabel}>Features Add-on</Text>
-              <Text style={pdfStyles.costValue}>${costs.featuresInfrastructureCost.toLocaleString()}</Text>
+              <Text style={pdfStyles.costValue}>+${costs.featuresInfrastructureCost.toLocaleString()}</Text>
             </View>
             <View style={pdfStyles.totalRow}>
               <Text style={pdfStyles.totalLabel}>Total Infrastructure</Text>
@@ -264,7 +327,7 @@ const ConfigurationPDFDocument = ({
             </View>
             <View style={pdfStyles.costRow}>
               <Text style={pdfStyles.costLabel}>Features Setup</Text>
-              <Text style={pdfStyles.costValue}>${costs.featuresProfessionalServicesCost.toLocaleString()}</Text>
+              <Text style={pdfStyles.costValue}>+${costs.featuresProfessionalServicesCost.toLocaleString()}</Text>
             </View>
             <View style={pdfStyles.totalRow}>
               <Text style={pdfStyles.totalLabel}>Total Professional Services</Text>
@@ -276,11 +339,11 @@ const ConfigurationPDFDocument = ({
           <View style={pdfStyles.costSection}>
             <Text style={pdfStyles.costTitle}>Managed Services (Monthly)</Text>
             <View style={pdfStyles.costRow}>
-              <Text style={pdfStyles.costLabel}>EC2 Management</Text>
+              <Text style={pdfStyles.costLabel}>EC2 Management ({customEC2Count} instances)</Text>
               <Text style={pdfStyles.costValue}>${costs.managedServicesEC2Cost.toLocaleString()}</Text>
             </View>
             <View style={pdfStyles.costRow}>
-              <Text style={pdfStyles.costLabel}>Storage Management</Text>
+              <Text style={pdfStyles.costLabel}>Storage Management ({customStorageTB} TB)</Text>
               <Text style={pdfStyles.costValue}>${costs.managedServicesStorageCost.toLocaleString()}</Text>
             </View>
             <View style={pdfStyles.totalRow}>
