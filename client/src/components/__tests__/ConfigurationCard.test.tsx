@@ -57,7 +57,7 @@ describe('ConfigurationCard', () => {
     )
     
     const badge = screen.getByText('VERY SMALL')
-    expect(badge.parentElement).toHaveClass('bg-secondary')
+    expect(badge).toHaveClass('bg-secondary')
   })
 
   it('truncates long descriptions correctly', () => {
@@ -73,7 +73,10 @@ describe('ConfigurationCard', () => {
     )
     
     expect(screen.getByText(/This is a very long description that should be truncated/)).toBeInTheDocument()
-    expect(screen.getByText(/\.\.\./)).toBeInTheDocument()
+    // Note: The current layout uses line-clamp-2 which truncates with CSS, not text ellipsis
+    // So we check for the truncation class instead
+    const description = screen.getByText(/This is a very long description that should be truncated/)
+    expect(description).toHaveClass('line-clamp-2')
   })
 
   it('is accessible with proper labels and roles', () => {
@@ -87,9 +90,10 @@ describe('ConfigurationCard', () => {
     expect(label).toBeInTheDocument()
     expect(label).toHaveAttribute('for', 'radio-very-small')
     
-    const radioInput = screen.getByDisplayValue('very-small')
+    const radioInput = screen.getByRole('radio', { hidden: true })
     expect(radioInput).toHaveAttribute('id', 'radio-very-small')
-    expect(radioInput).toHaveAttribute('type', 'radio')
+    expect(radioInput).toHaveAttribute('type', 'button')
+    expect(radioInput).toHaveAttribute('value', 'very-small')
   })
 
   it('can be clicked to select', async () => {
@@ -103,7 +107,7 @@ describe('ConfigurationCard', () => {
     const label = screen.getByTestId('label-config-very-small')
     await user.click(label)
     
-    const radioInput = screen.getByDisplayValue('very-small')
+    const radioInput = screen.getByRole('radio', { hidden: true })
     expect(radioInput).toBeChecked()
   })
 

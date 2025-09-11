@@ -4,21 +4,28 @@ import userEvent from '@testing-library/user-event'
 import CostCalculator from '../CostCalculator'
 import { landingZoneConfigurations } from '@shared/schema'
 
-// Mock the cost calculation utility
+// Mock the cost calculation utility - make it dynamic based on EC2 count
 vi.mock('@/utils/costCalculations', () => ({
-  calculateCosts: vi.fn(() => ({
-    baseInfrastructureCost: 1000,
-    featuresInfrastructureCost: 500,
-    totalInfrastructureCost: 1500,
-    baseProfessionalServicesCost: 5000,
-    featuresProfessionalServicesCost: 2000,
-    totalProfessionalServicesCost: 7000,
-    managedServicesEC2Cost: 150,
-    managedServicesStorageCost: 300,
-    totalManagedServicesCost: 450,
-    totalMonthlyCost: 1950,
-    totalFirstYearCost: 30400
-  }))
+  calculateCosts: vi.fn((config, features, ec2Count, storageTB) => {
+    const baseEC2Cost = ec2Count * 30; // $30 per EC2 instance
+    const baseStorageCost = storageTB * 50; // $50 per TB
+    const managedServicesEC2Cost = ec2Count * 15; // $15 per instance for managed services
+    const managedServicesStorageCost = storageTB * 25; // $25 per TB for managed services
+    
+    return {
+      baseInfrastructureCost: 1000 + baseEC2Cost + baseStorageCost,
+      featuresInfrastructureCost: 500,
+      totalInfrastructureCost: 1500 + baseEC2Cost + baseStorageCost,
+      baseProfessionalServicesCost: 5000,
+      featuresProfessionalServicesCost: 2000,
+      totalProfessionalServicesCost: 7000,
+      managedServicesEC2Cost: managedServicesEC2Cost,
+      managedServicesStorageCost: managedServicesStorageCost,
+      totalManagedServicesCost: managedServicesEC2Cost + managedServicesStorageCost,
+      totalMonthlyCost: 1950 + baseEC2Cost + baseStorageCost + managedServicesEC2Cost + managedServicesStorageCost,
+      totalFirstYearCost: (1950 + baseEC2Cost + baseStorageCost + managedServicesEC2Cost + managedServicesStorageCost) * 12 + 7000
+    }
+  })
 }))
 
 describe('CostCalculator', () => {

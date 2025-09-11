@@ -257,13 +257,13 @@ describe('LandingZoneIntakeForm', () => {
   it('has proper responsive layout', () => {
     render(<LandingZoneIntakeForm />)
     
-    // Should have responsive grid classes
+    // Should have responsive grid classes for main layout
     const mainGrid = screen.getByText('Choose Your Configuration').closest('.grid')
     expect(mainGrid).toHaveClass('lg:grid-cols-12')
     
-    // Configuration section should have responsive columns
+    // Configuration section now uses vertical stacking instead of responsive grid
     const configSection = screen.getByTestId('radiogroup-configurations')
-    expect(configSection).toHaveClass('grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3')
+    expect(configSection).toHaveClass('space-y-3')
   })
 
   it('is accessible with proper headings and navigation', () => {
