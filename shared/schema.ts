@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { createInsertSchema } from "drizzle-zod";
 import { getFeaturePricing, getBasePricing } from "./pricing-loader";
 import { getAllFeatures, getAvailableFeatureIds, getMandatoryFeatureIds } from "./features-loader";
 
@@ -39,9 +40,57 @@ export const costCalculationSchema = z.object({
   customStorageTB: z.number(),
 });
 
+// Presales Engineer Information Schema
+export const presalesInfoSchema = z.object({
+  presalesEngineerEmail: z.string().email("Please enter a valid email address"),
+  partnerName: z.string().min(1, "Partner name is required"),
+  endCustomerName: z.string().min(1, "End customer name is required"),
+  awsReferenceIds: z.string().optional(), // Optional field for multiple AWS reference IDs
+});
+
+// Submission Metrics Schema for Reporting
+export const submissionMetricsSchema = z.object({
+  submissionId: z.string().uuid(), // Unique identifier for this submission
+  submittedAt: z.date(), // Timestamp when the form was submitted
+  sessionId: z.string(), // Session tracking identifier
+  userAgent: z.string().optional(), // Browser/client information
+  configurationSize: z.enum(["very-small", "small", "medium", "large"]), // Selected configuration size
+  totalFeaturesSelected: z.number().min(0), // Count of features selected
+  totalEstimatedCost: z.number().min(0), // Total estimated cost in dollars
+  timeSpentOnForm: z.number().optional(), // Time in seconds from first interaction to submission
+});
+
+// Complete submission schema that combines all form data
+export const landingZoneSubmissionSchema = z.object({
+  costCalculation: costCalculationSchema,
+  presalesInfo: presalesInfoSchema,
+  submissionMetrics: submissionMetricsSchema,
+});
+
+// Insert schemas using drizzle-zod
+export const insertPresalesInfoSchema = presalesInfoSchema;
+export const insertSubmissionMetricsSchema = submissionMetricsSchema.omit({ 
+  submissionId: true, 
+  submittedAt: true 
+}); // Omit auto-generated fields
+export const insertLandingZoneSubmissionSchema = landingZoneSubmissionSchema.omit({
+  submissionMetrics: true
+}).extend({
+  submissionMetrics: insertSubmissionMetricsSchema
+});
+
+// Type exports
 export type Feature = z.infer<typeof featureSchema>;
 export type LandingZoneConfig = z.infer<typeof landingZoneConfigSchema>;
 export type CostCalculation = z.infer<typeof costCalculationSchema>;
+export type PresalesInfo = z.infer<typeof presalesInfoSchema>;
+export type SubmissionMetrics = z.infer<typeof submissionMetricsSchema>;
+export type LandingZoneSubmission = z.infer<typeof landingZoneSubmissionSchema>;
+
+// Insert types
+export type InsertPresalesInfo = z.infer<typeof insertPresalesInfoSchema>;
+export type InsertSubmissionMetrics = z.infer<typeof insertSubmissionMetricsSchema>;
+export type InsertLandingZoneSubmission = z.infer<typeof insertLandingZoneSubmissionSchema>;
 
 // Load features from external configuration
 export const availableFeatures: Feature[] = getAllFeatures();
