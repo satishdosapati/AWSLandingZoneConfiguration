@@ -20,7 +20,9 @@ export interface PricingConfig {
     };
   };
   pricingNotes: {
-    [key: string]: string;
+    [key: string]: string | {
+      [key: string]: string;
+    };
   };
 }
 

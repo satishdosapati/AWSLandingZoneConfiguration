@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { landingZoneConfigurations, LandingZoneConfig } from "@shared/schema";
 import { CheckCircle, Settings, FileText } from "lucide-react";
 
 export default function LandingZoneIntakeForm() {
+  const [, setLocation] = useLocation();
   const [selectedConfig, setSelectedConfig] = useState<string>("");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [customEC2Count, setCustomEC2Count] = useState<number>(1);
@@ -54,13 +56,16 @@ export default function LandingZoneIntakeForm() {
 
   const handleSubmit = () => {
     if (selectedConfiguration) {
-      console.log('Form submitted with:', {
-        config: selectedConfiguration,
-        selectedFeatures,
-        customEC2Count,
-        customStorageTB
+      // Create URL parameters to pass data to summary page
+      const params = new URLSearchParams({
+        config: selectedConfiguration.size,
+        features: selectedFeatures.join(','),
+        ec2: customEC2Count.toString(),
+        storage: customStorageTB.toString(),
       });
-      // TODO: Implement form submission logic
+      
+      // Navigate to summary page with data
+      setLocation(`/summary?${params.toString()}`);
     }
   };
 
