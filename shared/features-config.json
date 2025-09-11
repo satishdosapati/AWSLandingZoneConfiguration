@@ -7,6 +7,7 @@
       "id": "aws-organizations",
       "name": "AWS Organizations",
       "description": "Basic account organization and management",
+      "awsDefinition": "A centralized cloud account management service that lets you consolidate multiple AWS accounts into an organization that you create and centrally manage.",
       "category": "foundation",
       "mandatory": true,
       "availableInSizes": ["very-small", "small", "medium", "large"]
@@ -15,6 +16,7 @@
       "id": "control-tower",
       "name": "AWS Control Tower", 
       "description": "Landing zone setup and governance with guardrails",
+      "awsDefinition": "A service that offers a straightforward way to set up and govern an AWS multi-account environment, following prescriptive best practices. Orchestrates AWS Organizations, Service Catalog, and IAM Identity Center.",
       "category": "foundation",
       "mandatory": false,
       "availableInSizes": ["small", "medium", "large"]
@@ -23,6 +25,7 @@
       "id": "control-tower-extensions",
       "name": "Control Tower Custom Extensions",
       "description": "Advanced Control Tower customizations and extensions", 
+      "awsDefinition": "Advanced customizations for Control Tower including declarative policies, enhanced hook management, and custom account vending capabilities for enterprise environments.",
       "category": "foundation",
       "mandatory": false,
       "availableInSizes": ["large"]
@@ -31,6 +34,7 @@
       "id": "guardduty",
       "name": "Amazon GuardDuty",
       "description": "Threat detection and security monitoring",
+      "awsDefinition": "A threat detection service that continuously monitors your AWS accounts and workloads for malicious activity using AI/ML with integrated threat intelligence from AWS and third parties.",
       "category": "security", 
       "mandatory": false,
       "availableInSizes": ["very-small", "small", "medium", "large"]
@@ -39,6 +43,7 @@
       "id": "security-hub",
       "name": "AWS Security Hub",
       "description": "Centralized security findings and compliance dashboard",
+      "awsDefinition": "A cloud security posture management service that performs automated, continuous security best practice checks and aggregates security alerts from various AWS services in a standardized format.",
       "category": "security",
       "mandatory": false,
       "availableInSizes": ["small", "medium", "large"]
@@ -47,6 +52,7 @@
       "id": "inspector",
       "name": "Amazon Inspector", 
       "description": "Automated security assessment for applications",
+      "awsDefinition": "An automated vulnerability management service that continually scans AWS workloads for software vulnerabilities and unintended network exposure.",
       "category": "security",
       "mandatory": false,
       "availableInSizes": ["small", "medium", "large"]
@@ -55,6 +61,7 @@
       "id": "network-firewall",
       "name": "AWS Network Firewall",
       "description": "Managed network firewall service",
+      "awsDefinition": "A stateful, managed, network firewall and intrusion detection and prevention service for your Amazon VPC with deep packet inspection capabilities.",
       "category": "networking",
       "mandatory": false,
       "availableInSizes": ["medium", "large"]
@@ -63,6 +70,7 @@
       "id": "transit-gateway",
       "name": "AWS Transit Gateway", 
       "description": "Network transit hub for VPC connectivity",
+      "awsDefinition": "A service that interconnects your virtual private clouds (VPCs) and on-premises networks, simplifying network management by centralizing connectivity in a hub-and-spoke architecture.",
       "category": "networking",
       "mandatory": false,
       "availableInSizes": ["small", "medium", "large"]
@@ -71,6 +79,7 @@
       "id": "direct-connect",
       "name": "AWS Direct Connect",
       "description": "Dedicated network connection to AWS",
+      "awsDefinition": "Links your internal network to an AWS Direct Connect location over a standard Ethernet fiber-optic cable, providing a secure, high-bandwidth, low-latency connection that bypasses the public internet.",
       "category": "networking",
       "mandatory": false,
       "availableInSizes": ["medium", "large"]
@@ -79,6 +88,7 @@
       "id": "systems-manager", 
       "name": "AWS Systems Manager",
       "description": "Operational data and automation across AWS resources",
+      "awsDefinition": "Helps you centrally view, manage, and operate nodes at scale in AWS, on-premises, and multicloud environments with secure management without inbound ports or SSH keys.",
       "category": "automation",
       "mandatory": false,
       "availableInSizes": ["small", "medium", "large"]
@@ -87,6 +97,7 @@
       "id": "cloudformation-stacksets",
       "name": "CloudFormation StackSets",
       "description": "Deploy CloudFormation stacks across multiple accounts",
+      "awsDefinition": "Extends CloudFormation functionality by enabling you to create, update, or delete stacks across multiple accounts and Regions with a single operation from a central administrator account.",
       "category": "automation",
       "mandatory": false,
       "availableInSizes": ["medium", "large"]
@@ -95,6 +106,7 @@
       "id": "account-factory-terraform",
       "name": "Account Factory for Terraform (AFT)",
       "description": "Automated account provisioning with Terraform", 
+      "awsDefinition": "Sets up a Terraform pipeline to help you provision and customize accounts in AWS Control Tower, providing Terraform-based account provisioning while maintaining Control Tower governance.",
       "category": "automation",
       "mandatory": false,
       "availableInSizes": ["large"]
@@ -103,6 +115,7 @@
       "id": "cloudwatch-enhanced",
       "name": "Enhanced CloudWatch Monitoring",
       "description": "Advanced monitoring, dashboards, and alerting",
+      "awsDefinition": "Comprehensive monitoring service that retrieves metrics, monitors log files, sets alarms, and automatically reacts to changes in AWS resources with enhanced dashboards and alerting capabilities.",
       "category": "monitoring",
       "mandatory": false,
       "availableInSizes": ["medium", "large"]
@@ -111,6 +124,7 @@
       "id": "cloudtrail-organization",
       "name": "Organization-wide CloudTrail",
       "description": "Centralized audit logging across all accounts",
+      "awsDefinition": "An AWS service that helps you enable operational and risk auditing, governance, and compliance by recording actions taken by users, roles, or AWS services as events across your organization.",
       "category": "monitoring", 
       "mandatory": true,
       "availableInSizes": ["small", "medium", "large"]
@@ -119,6 +133,7 @@
       "id": "elasticsearch-logging",
       "name": "Elasticsearch Service for Logging",
       "description": "Advanced log analytics and search capabilities",
+      "awsDefinition": "A managed service (now Amazon OpenSearch Service) that makes it easy to deploy, operate, and scale Elasticsearch for log analytics, real-time application monitoring, and text search.",
       "category": "monitoring",
       "mandatory": false,
       "availableInSizes": ["large"]

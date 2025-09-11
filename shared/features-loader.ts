@@ -5,6 +5,7 @@ export interface FeatureConfigData {
   id: string;
   name: string;
   description: string;
+  awsDefinition: string;
   category: "foundation" | "security" | "networking" | "automation" | "monitoring";
   mandatory: boolean;
   availableInSizes: ("very-small" | "small" | "medium" | "large")[];

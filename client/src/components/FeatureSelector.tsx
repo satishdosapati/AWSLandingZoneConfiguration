@@ -3,8 +3,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Feature, LandingZoneConfig, availableFeatures } from "@shared/schema";
-import { ChevronDown, Shield, Network, Cog, Eye, Building2, DollarSign } from "lucide-react";
+import { ChevronDown, Shield, Network, Cog, Eye, Building2, DollarSign, Info } from "lucide-react";
 import { useState } from "react";
 
 interface FeatureSelectorProps {
@@ -86,17 +87,20 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
   };
 
   return (
-    <Card data-testid="card-feature-selector">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Cog className="h-5 w-5" />
-          Feature Selection
-        </CardTitle>
-        <CardDescription>
-          Choose additional features for your {selectedConfig.name}. 
-          Some features are mandatory and cannot be disabled.
-        </CardDescription>
-      </CardHeader>
+    <TooltipProvider>
+      <Card data-testid="card-feature-selector">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Cog className="h-5 w-5" />
+            Feature Selection
+          </CardTitle>
+          <CardDescription>
+            Choose additional features for your {selectedConfig.name}. 
+            Some features are mandatory and cannot be disabled.
+            <br />
+            <span className="text-xs text-muted-foreground">Hover over feature names to see AWS service definitions.</span>
+          </CardDescription>
+        </CardHeader>
       <CardContent className="space-y-4">
         {Object.entries(featuresByCategory).map(([category, features]) => {
           const costs = calculateFeatureCosts(features);
@@ -155,12 +159,22 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                         
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center gap-2">
-                            <label
-                              htmlFor={feature.id}
-                              className="font-medium cursor-pointer"
-                            >
-                              {feature.name}
-                            </label>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-1">
+                                  <label
+                                    htmlFor={feature.id}
+                                    className="font-medium cursor-pointer hover:text-primary transition-colors"
+                                  >
+                                    {feature.name}
+                                  </label>
+                                  <Info className="h-3 w-3 text-muted-foreground" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">{feature.awsDefinition}</p>
+                              </TooltipContent>
+                            </Tooltip>
                             <Badge 
                               variant="outline" 
                               className={`text-xs ${getCategoryColor(feature.category)}`}
@@ -203,5 +217,6 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
         })}
       </CardContent>
     </Card>
+    </TooltipProvider>
   );
 }

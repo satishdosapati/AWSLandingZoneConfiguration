@@ -7,6 +7,7 @@ export const featureSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
+  awsDefinition: z.string(),
   category: z.enum(["foundation", "security", "networking", "automation", "monitoring"]),
   mandatory: z.boolean(),
   infraCostImpact: z.number(), // Additional monthly infrastructure cost
