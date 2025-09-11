@@ -17,6 +17,7 @@ interface CostCalculatorProps {
   onSubmit: () => void;
   onExportPDF: () => void;
   onExportCSV: () => void;
+  isSubmitting?: boolean;
 }
 
 export default function CostCalculator({ 
@@ -28,7 +29,8 @@ export default function CostCalculator({
   onStorageChange,
   onSubmit,
   onExportPDF,
-  onExportCSV
+  onExportCSV,
+  isSubmitting = false
 }: CostCalculatorProps) {
   if (!selectedConfig) {
     return (
@@ -217,10 +219,11 @@ export default function CostCalculator({
             onClick={onSubmit} 
             className="w-full" 
             size="lg"
+            disabled={isSubmitting}
             data-testid="button-submit"
           >
             <CheckCircle className="h-4 w-4 mr-2" />
-            Submit Configuration
+            {isSubmitting ? "Submitting..." : "Submit Configuration"}
           </Button>
           
           <div className="grid grid-cols-2 gap-1.5 w-full">

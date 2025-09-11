@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +25,11 @@ export default function LandingZoneIntakeForm() {
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [customEC2Count, setCustomEC2Count] = useState<number>(1);
   const [customStorageTB, setCustomStorageTB] = useState<number>(1);
+  const { toast } = useToast();
+  
+  // Track form interaction time for metrics
+  const formStartTime = useRef<Date>(new Date());
+  const sessionId = useRef<string>(crypto.randomUUID());
 
   // Form setup for presales information
   const form = useForm<PresalesInfo>({
@@ -70,28 +78,87 @@ export default function LandingZoneIntakeForm() {
     // TODO: Implement CSV export functionality
   };
 
-  const handleSubmit = () => {
-    // Validate presales form first
-    form.handleSubmit((presalesData) => {
+  // Mutation for submitting form data to API
+  const submitMutation = useMutation({
+    mutationFn: async (submissionData: any) => {
+      const response = await apiRequest('POST', '/api/submissions', submissionData);
+      return response.json();
+    },
+    onSuccess: (data, variables) => {
+      console.log('Form submitted successfully:', data);
+      
+      toast({
+        title: "Form submitted successfully!",
+        description: `Submission ID: ${data.submissionId}`,
+      });
+      
+      // Navigate to summary page with original URL parameters for display
       if (selectedConfiguration) {
-        // Create URL parameters to pass data to summary page
         const params = new URLSearchParams({
           config: selectedConfiguration.size,
           features: selectedFeatures.join(','),
           ec2: customEC2Count.toString(),
           storage: customStorageTB.toString(),
-          // Add presales information
-          presalesEmail: presalesData.presalesEngineerEmail,
-          partnerName: presalesData.partnerName,
-          customerName: presalesData.endCustomerName,
-          awsReferenceIds: presalesData.awsReferenceIds || '',
+          presalesEmail: variables.presalesInfo.presalesEngineerEmail,
+          partnerName: variables.presalesInfo.partnerName,
+          customerName: variables.presalesInfo.endCustomerName,
+          awsReferenceIds: variables.presalesInfo.awsReferenceIds || '',
+          submissionId: data.submissionId,
         });
-        
-        // Navigate to summary page with data
         setLocation(`/summary?${params.toString()}`);
+      }
+    },
+    onError: (error) => {
+      console.error('Error submitting form:', error);
+      
+      toast({
+        title: "Submission failed",
+        description: "Please check your inputs and try again.",
+        variant: "destructive",
+      });
+      
+      // Scroll to top to show error
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+  });
+
+  const handleSubmit = () => {
+    // Validate presales form first
+    form.handleSubmit((presalesData) => {
+      if (selectedConfiguration) {
+        // Calculate time spent on form
+        const timeSpentOnForm = Math.floor((Date.now() - formStartTime.current.getTime()) / 1000);
+        
+        // Prepare submission data
+        const submissionData = {
+          costCalculation: {
+            selectedConfig: selectedConfiguration.size,
+            selectedFeatures,
+            customEC2Count,
+            customStorageTB,
+          },
+          presalesInfo: presalesData,
+          submissionMetrics: {
+            sessionId: sessionId.current,
+            userAgent: navigator.userAgent,
+            configurationSize: selectedConfiguration.size,
+            totalFeaturesSelected: selectedFeatures.length,
+            timeSpentOnForm,
+          },
+        };
+        
+        // Submit to API
+        submitMutation.mutate(submissionData);
       }
     }, (errors) => {
       console.log('Form validation errors:', errors);
+      
+      toast({
+        title: "Please check your inputs",
+        description: "Some required fields are missing or invalid.",
+        variant: "destructive",
+      });
+      
       // Scroll to top to show validation errors
       window.scrollTo({ top: 0, behavior: 'smooth' });
     })();
@@ -295,6 +362,7 @@ export default function LandingZoneIntakeForm() {
                 onSubmit={handleSubmit}
                 onExportPDF={handleExportPDF}
                 onExportCSV={handleExportCSV}
+                isSubmitting={submitMutation.isPending}
               />
               </div>
             </div>

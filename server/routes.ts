@@ -1,13 +1,179 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage, type SubmissionFilters } from "./storage";
+import { insertLandingZoneSubmissionSchema, landingZoneConfigurations } from "@shared/schema";
+import { calculateCosts } from "@shared/costCalculations";
+import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  // Middleware for parsing JSON bodies
+  app.use('/api', (req, res, next) => {
+    if (req.headers['content-type']?.includes('application/json')) {
+      return express.json()(req, res, next);
+    }
+    next();
+  });
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  // POST /api/submissions - Store new landing zone submission
+  app.post('/api/submissions', async (req, res) => {
+    try {
+      console.log('Received submission request:', req.body);
+      
+      // Validate request body using Zod schema
+      const validatedData = insertLandingZoneSubmissionSchema.parse(req.body);
+      
+      // Find the selected configuration
+      const selectedConfig = landingZoneConfigurations.find(
+        config => config.size === validatedData.costCalculation.selectedConfig
+      );
+      
+      if (!selectedConfig) {
+        return res.status(400).json({ 
+          error: 'Invalid configuration size selected' 
+        });
+      }
+      
+      // Calculate total cost for validation and metrics
+      const costBreakdown = calculateCosts(
+        selectedConfig,
+        validatedData.costCalculation.selectedFeatures,
+        validatedData.costCalculation.customEC2Count,
+        validatedData.costCalculation.customStorageTB
+      );
+      
+      // Create the submission with calculated metrics
+      const submissionToStore = {
+        ...validatedData,
+        submissionMetrics: {
+          ...validatedData.submissionMetrics,
+          configurationSize: selectedConfig.size,
+          totalFeaturesSelected: validatedData.costCalculation.selectedFeatures.length,
+          totalEstimatedCost: costBreakdown.totalFirstYearCost,
+        }
+      };
+      
+      // Store the submission
+      const storedSubmission = await storage.createSubmission(submissionToStore);
+      
+      console.log('Submission stored successfully:', storedSubmission.submissionMetrics.submissionId);
+      
+      res.status(201).json({
+        success: true,
+        submissionId: storedSubmission.submissionMetrics.submissionId,
+        estimatedCost: costBreakdown.totalFirstYearCost,
+      });
+      
+    } catch (error) {
+      console.error('Error storing submission:', error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: error.errors,
+        });
+      }
+      
+      res.status(500).json({ 
+        error: 'Internal server error while storing submission' 
+      });
+    }
+  });
+
+  // GET /api/submissions - Retrieve submissions for reporting
+  app.get('/api/submissions', async (req, res) => {
+    try {
+      // Parse query parameters for filtering
+      const filters: SubmissionFilters = {};
+      
+      if (req.query.configurationSize) {
+        filters.configurationSize = req.query.configurationSize as string;
+      }
+      
+      if (req.query.partnerName) {
+        filters.partnerName = req.query.partnerName as string;
+      }
+      
+      if (req.query.dateFrom) {
+        filters.dateFrom = new Date(req.query.dateFrom as string);
+      }
+      
+      if (req.query.dateTo) {
+        filters.dateTo = new Date(req.query.dateTo as string);
+      }
+      
+      if (req.query.limit) {
+        const limit = parseInt(req.query.limit as string, 10);
+        if (!isNaN(limit) && limit > 0) {
+          filters.limit = Math.min(limit, 100); // Cap at 100 for performance
+        }
+      }
+      
+      const submissions = await storage.getSubmissions(filters);
+      
+      res.json({
+        success: true,
+        count: submissions.length,
+        submissions: submissions,
+      });
+      
+    } catch (error) {
+      console.error('Error retrieving submissions:', error);
+      res.status(500).json({ 
+        error: 'Internal server error while retrieving submissions' 
+      });
+    }
+  });
+
+  // GET /api/submissions/stats - Basic statistics for reporting
+  app.get('/api/submissions/stats', async (req, res) => {
+    try {
+      const stats = await storage.getSubmissionStats();
+      
+      res.json({
+        success: true,
+        stats: stats,
+      });
+      
+    } catch (error) {
+      console.error('Error retrieving submission stats:', error);
+      res.status(500).json({ 
+        error: 'Internal server error while retrieving statistics' 
+      });
+    }
+  });
+
+  // GET /api/submissions/:id - Get specific submission by ID
+  app.get('/api/submissions/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      if (!id) {
+        return res.status(400).json({ 
+          error: 'Submission ID is required' 
+        });
+      }
+      
+      const submission = await storage.getSubmissionById(id);
+      
+      if (!submission) {
+        return res.status(404).json({ 
+          error: 'Submission not found' 
+        });
+      }
+      
+      res.json({
+        success: true,
+        submission: submission,
+      });
+      
+    } catch (error) {
+      console.error('Error retrieving submission:', error);
+      res.status(500).json({ 
+        error: 'Internal server error while retrieving submission' 
+      });
+    }
+  });
 
   const httpServer = createServer(app);
 
