@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import ConfigurationCard from "./ConfigurationCard";
 import CostCalculator from "./CostCalculator";
 import ConfigurationDetails from "./ConfigurationDetails";
 import FeatureSelector from "./FeatureSelector";
-import { landingZoneConfigurations, LandingZoneConfig } from "@shared/schema";
-import { CheckCircle, Settings, FileText } from "lucide-react";
+import { landingZoneConfigurations, LandingZoneConfig, presalesInfoSchema, type PresalesInfo } from "@shared/schema";
+import { CheckCircle, Settings, FileText, User } from "lucide-react";
 
 export default function LandingZoneIntakeForm() {
   const [, setLocation] = useLocation();
@@ -17,6 +22,17 @@ export default function LandingZoneIntakeForm() {
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [customEC2Count, setCustomEC2Count] = useState<number>(1);
   const [customStorageTB, setCustomStorageTB] = useState<number>(1);
+
+  // Form setup for presales information
+  const form = useForm<PresalesInfo>({
+    resolver: zodResolver(presalesInfoSchema),
+    defaultValues: {
+      presalesEngineerEmail: "",
+      partnerName: "",
+      endCustomerName: "",
+      awsReferenceIds: "",
+    },
+  });
 
   const selectedConfiguration = landingZoneConfigurations.find(
     config => config.size === selectedConfig
@@ -55,18 +71,30 @@ export default function LandingZoneIntakeForm() {
   };
 
   const handleSubmit = () => {
-    if (selectedConfiguration) {
-      // Create URL parameters to pass data to summary page
-      const params = new URLSearchParams({
-        config: selectedConfiguration.size,
-        features: selectedFeatures.join(','),
-        ec2: customEC2Count.toString(),
-        storage: customStorageTB.toString(),
-      });
-      
-      // Navigate to summary page with data
-      setLocation(`/summary?${params.toString()}`);
-    }
+    // Validate presales form first
+    form.handleSubmit((presalesData) => {
+      if (selectedConfiguration) {
+        // Create URL parameters to pass data to summary page
+        const params = new URLSearchParams({
+          config: selectedConfiguration.size,
+          features: selectedFeatures.join(','),
+          ec2: customEC2Count.toString(),
+          storage: customStorageTB.toString(),
+          // Add presales information
+          presalesEmail: presalesData.presalesEngineerEmail,
+          partnerName: presalesData.partnerName,
+          customerName: presalesData.endCustomerName,
+          awsReferenceIds: presalesData.awsReferenceIds || '',
+        });
+        
+        // Navigate to summary page with data
+        setLocation(`/summary?${params.toString()}`);
+      }
+    }, (errors) => {
+      console.log('Form validation errors:', errors);
+      // Scroll to top to show validation errors
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })();
   };
 
   return (
@@ -82,9 +110,98 @@ export default function LandingZoneIntakeForm() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-4">
-            {/* Configuration Selection */}
-            <div className="lg:col-span-8 space-y-3">
+          <Form {...form}>
+            {/* Presales Information Section */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Presales Information
+                </CardTitle>
+                <CardDescription>
+                  Please provide your contact information and customer details for this AWS Landing Zone configuration request.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="presalesEngineerEmail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Presales Engineer Email *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="engineer@partner.com"
+                            data-testid="input-presales-email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="partnerName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Partner Name *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Consulting Partner Name"
+                            data-testid="input-partner-name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="endCustomerName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>End Customer Name *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Customer Organization Name"
+                            data-testid="input-customer-name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="awsReferenceIds"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>AWS Reference IDs (Optional)</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter AWS Account IDs, Case Numbers, or other reference identifiers (one per line)"
+                            className="min-h-[80px]"
+                            data-testid="textarea-aws-reference-ids"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid lg:grid-cols-12 gap-4">
+              {/* Configuration Selection */}
+              <div className="lg:col-span-8 space-y-3">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -179,8 +296,9 @@ export default function LandingZoneIntakeForm() {
                 onExportPDF={handleExportPDF}
                 onExportCSV={handleExportCSV}
               />
+              </div>
             </div>
-          </div>
+          </Form>
         </div>
       </div>
     </div>

@@ -9,13 +9,17 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature } from "@shared/schema";
 import { calculateCosts, CostBreakdown } from "@/utils/costCalculations";
 import { getPricingVersion } from "@shared/pricing-loader";
-import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive } from "lucide-react";
+import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User } from "lucide-react";
 
 interface SummaryData {
   configSize: string;
   selectedFeatures: string[];
   customEC2Count: number;
   customStorageTB: number;
+  presalesEmail?: string;
+  partnerName?: string;
+  customerName?: string;
+  awsReferenceIds?: string;
 }
 
 // PDF Styles for professional Ingram Micro letterhead
@@ -233,13 +237,15 @@ const ConfigurationPDFDocument = ({
   selectedFeatureObjects, 
   costs, 
   customEC2Count, 
-  customStorageTB 
+  customStorageTB,
+  presalesData
 }: {
   config: LandingZoneConfig;
   selectedFeatureObjects: Feature[];
   costs: CostBreakdown;
   customEC2Count: number;
   customStorageTB: number;
+  presalesData: { presalesEmail?: string; partnerName?: string; customerName?: string; awsReferenceIds?: string; };
 }) => {
   const pricingInfo = getPricingVersion();
   const currentDate = new Date().toLocaleDateString();
@@ -254,6 +260,39 @@ const ConfigurationPDFDocument = ({
           <Text style={pdfStyles.documentTitle}>AWS Landing Zone Configuration Summary</Text>
           <Text style={pdfStyles.documentSubtitle}>Generated on {currentDate}</Text>
         </View>
+
+        {/* Presales Information */}
+        {(presalesData.presalesEmail || presalesData.partnerName || presalesData.customerName) && (
+          <View style={pdfStyles.section}>
+            <Text style={pdfStyles.sectionTitle}>Presales Information</Text>
+            <View style={pdfStyles.configCard}>
+              {presalesData.presalesEmail && (
+                <View style={pdfStyles.resourceRow}>
+                  <Text style={pdfStyles.resourceRowLabel}>Presales Engineer:</Text>
+                  <Text style={pdfStyles.resourceRowValue}>{presalesData.presalesEmail}</Text>
+                </View>
+              )}
+              {presalesData.partnerName && (
+                <View style={pdfStyles.resourceRow}>
+                  <Text style={pdfStyles.resourceRowLabel}>Partner:</Text>
+                  <Text style={pdfStyles.resourceRowValue}>{presalesData.partnerName}</Text>
+                </View>
+              )}
+              {presalesData.customerName && (
+                <View style={pdfStyles.resourceRow}>
+                  <Text style={pdfStyles.resourceRowLabel}>End Customer:</Text>
+                  <Text style={pdfStyles.resourceRowValue}>{presalesData.customerName}</Text>
+                </View>
+              )}
+              {presalesData.awsReferenceIds && (
+                <View style={pdfStyles.structureSection}>
+                  <Text style={pdfStyles.structureLabel}>AWS Reference IDs</Text>
+                  <Text style={pdfStyles.structureValue}>{presalesData.awsReferenceIds}</Text>
+                </View>
+              )}
+            </View>
+          </View>
+        )}
 
         {/* Selected Configuration */}
         <View style={pdfStyles.section}>
@@ -396,6 +435,10 @@ export default function SummaryPage() {
       const featuresParam = urlParams.get('features');
       const ec2Count = urlParams.get('ec2');
       const storageTB = urlParams.get('storage');
+      const presalesEmail = urlParams.get('presalesEmail');
+      const partnerName = urlParams.get('partnerName');
+      const customerName = urlParams.get('customerName');
+      const awsReferenceIds = urlParams.get('awsReferenceIds');
 
       if (configSize && ec2Count && storageTB) {
         const data: SummaryData = {
@@ -403,6 +446,10 @@ export default function SummaryPage() {
           selectedFeatures: featuresParam ? featuresParam.split(',') : [],
           customEC2Count: parseInt(ec2Count, 10),
           customStorageTB: parseInt(storageTB, 10),
+          presalesEmail: presalesEmail || undefined,
+          partnerName: partnerName || undefined,
+          customerName: customerName || undefined,
+          awsReferenceIds: awsReferenceIds || undefined,
         };
         
         setSummaryData(data);
@@ -493,6 +540,12 @@ export default function SummaryPage() {
                     costs={costs}
                     customEC2Count={summaryData.customEC2Count}
                     customStorageTB={summaryData.customStorageTB}
+                    presalesData={{
+                      presalesEmail: summaryData.presalesEmail,
+                      partnerName: summaryData.partnerName,
+                      customerName: summaryData.customerName,
+                      awsReferenceIds: summaryData.awsReferenceIds,
+                    }}
                   />
                 }
                 fileName={`aws-landing-zone-${config.size}-configuration.pdf`}
@@ -517,6 +570,57 @@ export default function SummaryPage() {
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Presales Information */}
+              {(summaryData.presalesEmail || summaryData.partnerName || summaryData.customerName) && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <User className="h-5 w-5 text-blue-600" />
+                      Presales Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        {summaryData.presalesEmail && (
+                          <div>
+                            <h4 className="font-semibold mb-1">Presales Engineer</h4>
+                            <p className="text-muted-foreground" data-testid="text-presales-email">
+                              {summaryData.presalesEmail}
+                            </p>
+                          </div>
+                        )}
+                        {summaryData.partnerName && (
+                          <div>
+                            <h4 className="font-semibold mb-1">Partner Name</h4>
+                            <p className="text-muted-foreground" data-testid="text-partner-name">
+                              {summaryData.partnerName}
+                            </p>
+                          </div>
+                        )}
+                        {summaryData.customerName && (
+                          <div>
+                            <h4 className="font-semibold mb-1">End Customer</h4>
+                            <p className="text-muted-foreground" data-testid="text-customer-name">
+                              {summaryData.customerName}
+                            </p>
+                          </div>
+                        )}
+                        {summaryData.awsReferenceIds && (
+                          <div className="md:col-span-2">
+                            <h4 className="font-semibold mb-1">AWS Reference IDs</h4>
+                            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs font-mono">
+                              <pre className="whitespace-pre-wrap" data-testid="text-aws-reference-ids">
+                                {summaryData.awsReferenceIds}
+                              </pre>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
               {/* Selected Configuration */}
               <Card>
                 <CardHeader>
