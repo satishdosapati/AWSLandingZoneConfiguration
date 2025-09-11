@@ -31,69 +31,108 @@
     }
   },
 
-  "featurePricing": {
-    "aws-organizations": {
-      "infraCostImpact": 0,
-      "professionalServicesCostImpact": 0
-    },
-    "control-tower": {
-      "infraCostImpact": 75,
-      "professionalServicesCostImpact": 8000
-    },
-    "control-tower-extensions": {
-      "infraCostImpact": 150,
-      "professionalServicesCostImpact": 25000
-    },
-    "guardduty": {
-      "infraCostImpact": 200,
-      "professionalServicesCostImpact": 3000
-    },
-    "security-hub": {
-      "infraCostImpact": 125,
-      "professionalServicesCostImpact": 4000
-    },
-    "inspector": {
-      "infraCostImpact": 85,
-      "professionalServicesCostImpact": 2500
-    },
-    "network-firewall": {
-      "infraCostImpact": 365,
-      "professionalServicesCostImpact": 12000
-    },
-    "transit-gateway": {
-      "infraCostImpact": 108,
-      "professionalServicesCostImpact": 6000
-    },
-    "direct-connect": {
-      "infraCostImpact": 162,
-      "professionalServicesCostImpact": 15000
-    },
-    "systems-manager": {
-      "infraCostImpact": 25,
-      "professionalServicesCostImpact": 4000
-    },
-    "cloudformation-stacksets": {
-      "infraCostImpact": 15,
-      "professionalServicesCostImpact": 5000
-    },
-    "account-factory-terraform": {
-      "infraCostImpact": 50,
-      "professionalServicesCostImpact": 30000
-    },
-    "cloudwatch-enhanced": {
-      "infraCostImpact": 180,
-      "professionalServicesCostImpact": 6000
-    },
-    "cloudtrail-organization": {
-      "infraCostImpact": 45,
-      "professionalServicesCostImpact": 3000
-    },
-    "elasticsearch-logging": {
-      "infraCostImpact": 650,
-      "professionalServicesCostImpact": 12000
-    }
+ "featurePricing": {
+  "aws-organizations": {
+    "infraCostImpact": 0,
+    "professionalServicesCostImpact": 0,
+    "_comment": "Estimated effort: 0 hours"
   },
-
+  "control-tower": {
+    "infraCostImpact": 75,
+    "professionalServicesCostImpact": 8600,
+    "_comment": "Estimated effort: 40 hours at $215/hr"
+  },
+  "control-tower-extensions": {
+    "infraCostImpact": 150,
+    "professionalServicesCostImpact": 25800,
+    "_comment": "Estimated effort: 120 hours at $215/hr"
+  },
+  "iam-basic": {
+    "infraCostImpact": 10,
+    "professionalServicesCostImpact": 1720,
+    "_comment": "Estimated effort: 8 hours at $215/hr"
+  },
+  "iam-identity-center": {
+    "infraCostImpact": 20,
+    "professionalServicesCostImpact": 4300,
+    "_comment": "Estimated effort: 20 hours at $215/hr"
+  },
+  "vpn-connectivity": {
+    "infraCostImpact": 50,
+    "professionalServicesCostImpact": 3870,
+    "_comment": "Estimated effort: 18 hours at $215/hr"
+  },
+  "transit-gateway": {
+    "infraCostImpact": 108,
+    "professionalServicesCostImpact": 6020,
+    "_comment": "Estimated effort: 28 hours at $215/hr"
+  },
+  "direct-connect": {
+    "infraCostImpact": 162,
+    "professionalServicesCostImpact": 15050,
+    "_comment": "Estimated effort: 70 hours at $215/hr"
+  },
+  "network-firewall": {
+    "infraCostImpact": 365,
+    "professionalServicesCostImpact": 12040,
+    "_comment": "Estimated effort: 56 hours at $215/hr"
+  },
+  "guardduty": {
+    "infraCostImpact": 200,
+    "professionalServicesCostImpact": 3010,
+    "_comment": "Estimated effort: 14 hours at $215/hr"
+  },
+  "security-hub": {
+    "infraCostImpact": 125,
+    "professionalServicesCostImpact": 3870,
+    "_comment": "Estimated effort: 18 hours at $215/hr"
+  },
+  "inspector": {
+    "infraCostImpact": 85,
+    "professionalServicesCostImpact": 2580,
+    "_comment": "Estimated effort: 12 hours at $215/hr"
+  },
+  "macie": {
+    "infraCostImpact": 100,
+    "professionalServicesCostImpact": 6450,
+    "_comment": "Estimated effort: 30 hours at $215/hr"
+  },
+  "cloudtrail": {
+    "infraCostImpact": 45,
+    "professionalServicesCostImpact": 2150,
+    "_comment": "Estimated effort: 10 hours at $215/hr"
+  },
+  "cloudwatch": {
+    "infraCostImpact": 50,
+    "professionalServicesCostImpact": 2580,
+    "_comment": "Estimated effort: 12 hours at $215/hr"
+  },
+  "opensearch-logging": {
+    "infraCostImpact": 650,
+    "professionalServicesCostImpact": 12040,
+    "_comment": "Estimated effort: 56 hours at $215/hr"
+  },
+  "budgets": {
+    "infraCostImpact": 20,
+    "professionalServicesCostImpact": 1290,
+    "_comment": "Estimated effort: 6 hours at $215/hr"
+  },
+  "cost-explorer": {
+    "infraCostImpact": 25,
+    "professionalServicesCostImpact": 1720,
+    "_comment": "Estimated effort: 8 hours at $215/hr"
+  },
+  "backup": {
+    "infraCostImpact": 100,
+    "professionalServicesCostImpact": 4300,
+    "_comment": "Estimated effort: 20 hours at $215/hr"
+  },
+  "audit-manager": {
+    "infraCostImpact": 60,
+    "professionalServicesCostImpact": 3870,
+    "_comment": "Estimated effort: 18 hours at $215/hr"
+  }
+},
   "pricingNotes": {
     "source": "Based on AWS Public Pricing for US East 2 (Ohio) region as of September 2024",
     "infraCostImpact": "Additional monthly infrastructure cost in USD based on actual AWS service pricing",
