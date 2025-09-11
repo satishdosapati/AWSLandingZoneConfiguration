@@ -13,8 +13,8 @@ import { CheckCircle, Settings, FileText } from "lucide-react";
 export default function LandingZoneIntakeForm() {
   const [selectedConfig, setSelectedConfig] = useState<string>("");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [customEC2Count, setCustomEC2Count] = useState<number>(0);
-  const [customStorageTB, setCustomStorageTB] = useState<number>(0);
+  const [customEC2Count, setCustomEC2Count] = useState<number>(1);
+  const [customStorageTB, setCustomStorageTB] = useState<number>(1);
 
   const selectedConfiguration = landingZoneConfigurations.find(
     config => config.size === selectedConfig
@@ -169,8 +169,14 @@ export default function LandingZoneIntakeForm() {
                 selectedFeatures={selectedFeatures}
                 customEC2Count={customEC2Count}
                 customStorageTB={customStorageTB}
-                onEC2Change={(value) => setCustomEC2Count(value[0])}
-                onStorageChange={(value) => setCustomStorageTB(value[0])}
+                onEC2Change={(value) => {
+                  console.log('EC2 slider changed to:', value[0]);
+                  setCustomEC2Count(value[0]);
+                }}
+                onStorageChange={(value) => {
+                  console.log('Storage slider changed to:', value[0]);
+                  setCustomStorageTB(value[0]);
+                }}
               />
               
               {selectedConfiguration && (
