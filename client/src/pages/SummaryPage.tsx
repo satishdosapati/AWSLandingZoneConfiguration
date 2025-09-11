@@ -328,7 +328,7 @@ export default function SummaryPage() {
   useEffect(() => {
     if (match) {
       // Parse URL parameters to get configuration data
-      const urlParams = new URLSearchParams(location.split('?')[1] || '');
+      const urlParams = new URLSearchParams(window.location.search);
       const configSize = urlParams.get('config');
       const featuresParam = urlParams.get('features');
       const ec2Count = urlParams.get('ec2');
