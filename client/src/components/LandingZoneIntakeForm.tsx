@@ -77,9 +77,9 @@ export default function LandingZoneIntakeForm() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-12 gap-6">
             {/* Configuration Selection */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-8 space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -103,7 +103,6 @@ export default function LandingZoneIntakeForm() {
                         config={config}
                         value={config.size}
                         isSelected={selectedConfig === config.size}
-                        onSelect={handleConfigSelection}
                       />
                     ))}
                   </RadioGroup>
@@ -152,7 +151,7 @@ export default function LandingZoneIntakeForm() {
 
               {/* Feature Selection */}
               {selectedConfiguration && (
-                <div className="mt-6">
+                <div className="mt-4">
                   <FeatureSelector
                     selectedConfig={selectedConfiguration}
                     selectedFeatures={selectedFeatures}
@@ -163,7 +162,7 @@ export default function LandingZoneIntakeForm() {
             </div>
 
             {/* Cost Calculator Sidebar */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-4">
               <CostCalculator
                 selectedConfig={selectedConfiguration || null}
                 selectedFeatures={selectedFeatures}
@@ -171,42 +170,10 @@ export default function LandingZoneIntakeForm() {
                 customStorageTB={customStorageTB}
                 onEC2Change={(value) => setCustomEC2Count(value[0])}
                 onStorageChange={(value) => setCustomStorageTB(value[0])}
+                onSubmit={handleSubmit}
+                onExportPDF={handleExportPDF}
+                onExportCSV={handleExportCSV}
               />
-              
-              {selectedConfiguration && (
-                <div className="mt-6 space-y-3">
-                  <Button 
-                    onClick={handleSubmit} 
-                    className="w-full" 
-                    size="lg"
-                    data-testid="button-submit"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Submit Configuration
-                  </Button>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleExportPDF}
-                      data-testid="button-export-pdf-form"
-                    >
-                      <FileText className="h-4 w-4 mr-1" />
-                      PDF
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleExportCSV}
-                      data-testid="button-export-csv-form"
-                    >
-                      <FileText className="h-4 w-4 mr-1" />
-                      CSV
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>

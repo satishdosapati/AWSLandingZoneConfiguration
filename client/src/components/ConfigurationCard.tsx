@@ -9,7 +9,6 @@ interface ConfigurationCardProps {
   config: LandingZoneConfig;
   value: string;
   isSelected: boolean;
-  onSelect: (value: string) => void;
 }
 
 const getSizeIcon = (size: string) => {
@@ -42,48 +41,57 @@ const getSizeBadgeVariant = (size: string) => {
   }
 };
 
-export default function ConfigurationCard({ config, value, isSelected, onSelect }: ConfigurationCardProps) {
+export default function ConfigurationCard({ config, value, isSelected }: ConfigurationCardProps) {
+  const radioId = `radio-${value}`;
+  
   return (
-    <Card 
-      className={`cursor-pointer transition-all duration-200 hover-elevate min-h-40 flex flex-col ${
-        isSelected ? "ring-2 ring-primary border-primary" : ""
-      }`}
-      onClick={() => onSelect(value)}
-      data-testid={`card-config-${config.size}`}
-    >
-      <RadioGroupItem value={value} id={value} className="sr-only" />
-      <CardHeader className="pb-3 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {getSizeIcon(config.size)}
-            <CardTitle className="text-base font-semibold line-clamp-2">
-              {config.name.replace(/Customers?/g, '').replace(/\([^)]*\)/, '').trim()}
-            </CardTitle>
-          </div>
-          <Badge variant={getSizeBadgeVariant(config.size) as any} className="text-xs">
-            {config.size.replace("-", " ").toUpperCase()}
-          </Badge>
-        </div>
-        <CardDescription className="text-xs text-muted-foreground line-clamp-2 mt-1">
-          {config.description.length > 60 ? config.description.substring(0, 60) + '...' : config.description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 space-y-3">
-        <div className="space-y-2 text-xs">
-          <div>
-            <h4 className="font-medium text-foreground">Base Cost</h4>
-            <p className="text-muted-foreground">${config.baseInfraCostPerMonth.toLocaleString()}/mo</p>
-          </div>
-          <div>
-            <h4 className="font-medium text-foreground">Resources</h4>
-            <p className="text-muted-foreground">{config.defaultVMs} VMs, {config.defaultStorageTB}TB</p>
-          </div>
-          <div>
-            <h4 className="font-medium text-foreground">Features</h4>
-            <p className="text-muted-foreground">{config.availableFeatures.length} available</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="relative">
+      <RadioGroupItem value={value} id={radioId} className="sr-only" />
+      <Label 
+        htmlFor={radioId}
+        className="block cursor-pointer"
+        data-testid={`label-config-${config.size}`}
+      >
+        <Card 
+          className={`transition-all duration-200 hover-elevate min-h-40 flex flex-col ${
+            isSelected ? "ring-2 ring-primary border-primary" : ""
+          }`}
+          data-testid={`card-config-${config.size}`}
+        >
+          <CardHeader className="pb-3 flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {getSizeIcon(config.size)}
+                <CardTitle className="text-base font-semibold line-clamp-2">
+                  {config.name.replace(/Customers?/g, '').replace(/\([^)]*\)/, '').trim()}
+                </CardTitle>
+              </div>
+              <Badge variant={getSizeBadgeVariant(config.size) as any} className="text-xs">
+                {config.size.replace("-", " ").toUpperCase()}
+              </Badge>
+            </div>
+            <CardDescription className="text-xs text-muted-foreground line-clamp-2 mt-1">
+              {config.description.length > 60 ? config.description.substring(0, 60) + '...' : config.description}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 space-y-3">
+            <div className="space-y-2 text-xs">
+              <div>
+                <h4 className="font-medium text-foreground">Base Cost</h4>
+                <p className="text-muted-foreground">${config.baseInfraCostPerMonth.toLocaleString()}/mo</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-foreground">Resources</h4>
+                <p className="text-muted-foreground">{config.defaultVMs} VMs, {config.defaultStorageTB}TB</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-foreground">Features</h4>
+                <p className="text-muted-foreground">{config.availableFeatures.length} available</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Label>
+    </div>
   );
 }

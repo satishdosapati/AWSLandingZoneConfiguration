@@ -1,10 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LandingZoneConfig } from "@shared/schema";
 import { calculateCosts } from "@/utils/costCalculations";
-import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings } from "lucide-react";
+import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CostCalculatorProps {
   selectedConfig: LandingZoneConfig | null;
@@ -13,6 +14,9 @@ interface CostCalculatorProps {
   customStorageTB: number;
   onEC2Change: (value: number[]) => void;
   onStorageChange: (value: number[]) => void;
+  onSubmit: () => void;
+  onExportPDF: () => void;
+  onExportCSV: () => void;
 }
 
 export default function CostCalculator({ 
@@ -21,7 +25,10 @@ export default function CostCalculator({
   customEC2Count, 
   customStorageTB, 
   onEC2Change, 
-  onStorageChange 
+  onStorageChange,
+  onSubmit,
+  onExportPDF,
+  onExportCSV
 }: CostCalculatorProps) {
   if (!selectedConfig) {
     return (
@@ -46,17 +53,18 @@ export default function CostCalculator({
   const costs = calculateCosts(selectedConfig, selectedFeatures, customEC2Count, customStorageTB);
 
   return (
-    <Card className="sticky top-6" data-testid="card-cost-calculator">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Calculator className="h-5 w-5" />
-          <CardTitle>Cost Calculator</CardTitle>
-        </div>
-        <CardDescription>
-          Customize resources for {selectedConfig.name}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="sticky top-6">
+      <Card data-testid="card-cost-calculator">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            <CardTitle>Cost Calculator</CardTitle>
+          </div>
+          <CardDescription>
+            Customize resources for {selectedConfig.name}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
         {/* Resource Customization */}
         <div className="space-y-4">
           <div>
@@ -203,7 +211,40 @@ export default function CostCalculator({
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-3">
+          <Button 
+            onClick={onSubmit} 
+            className="w-full" 
+            size="lg"
+            data-testid="button-submit"
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Submit Configuration
+          </Button>
+          
+          <div className="grid grid-cols-2 gap-2 w-full">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onExportPDF}
+              data-testid="button-export-pdf-form"
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              PDF
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onExportCSV}
+              data-testid="button-export-csv-form"
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              CSV
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

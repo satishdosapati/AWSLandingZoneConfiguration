@@ -84,8 +84,8 @@ export default function ConfigurationDetails({ config }: ConfigurationDetailsPro
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid gap-6">
+      <CardContent className="space-y-4">
+        <div className="grid gap-4">
           {detailSections.map((section, index) => {
             const IconComponent = section.icon;
             return (
