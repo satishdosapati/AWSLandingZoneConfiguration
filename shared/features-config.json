@@ -2,8 +2,7 @@
   "version": "1.0.0",
   "lastUpdated": "2025-09-11",
   "description": "AWS Landing Zone features configuration - allows adding/removing features per configuration size",
-  {
-    "features": [
+  "features": [
       {
         "id": "aws-organizations",
         "name": "AWS Organizations",
@@ -213,4 +212,4 @@
       { "id": "compliance", "name": "Compliance and Governance", "description": "Compliance frameworks, audit, and governance services" },
       { "id": "data-management", "name": "Data Management", "description": "Backup, lifecycle management, and data governance services" }
     ]
-  }  
+}  

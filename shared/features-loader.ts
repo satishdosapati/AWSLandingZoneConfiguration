@@ -6,7 +6,7 @@ export interface FeatureConfigData {
   name: string;
   description: string;
   awsDefinition: string;
-  category: "foundation" | "security" | "networking" | "automation" | "monitoring";
+  category: "foundation" | "identity-access-management" | "networking" | "security" | "monitoring" | "cost-management" | "data-management" | "compliance";
   mandatory: boolean;
   availableInSizes: ("very-small" | "small" | "medium" | "large")[];
 }

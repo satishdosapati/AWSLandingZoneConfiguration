@@ -9,7 +9,7 @@ export const featureSchema = z.object({
   name: z.string(),
   description: z.string(),
   awsDefinition: z.string(),
-  category: z.enum(["foundation", "security", "networking", "automation", "monitoring"]),
+  category: z.enum(["foundation", "identity-access-management", "networking", "security", "monitoring", "cost-management", "data-management", "compliance"]),
   mandatory: z.boolean(),
   infraCostImpact: z.number(), // Additional monthly infrastructure cost
   professionalServicesCostImpact: z.number(), // Additional one-time professional services cost

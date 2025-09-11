@@ -31,40 +31,37 @@ const detailSections = [
     description: "Organizational units and hierarchy"
   },
   {
-    title: "Guardrails",
-    icon: Shield,
-    key: "guardrails" as keyof LandingZoneConfig,
-    description: "Security policies and compliance controls"
-  },
-  {
-    title: "Access Management",
-    icon: Users,
-    key: "accessManagement" as keyof LandingZoneConfig,
-    description: "Identity and access control systems"
-  },
-  {
-    title: "Networking",
-    icon: Network,
-    key: "networking" as keyof LandingZoneConfig,
-    description: "Network architecture and connectivity"
-  },
-  {
-    title: "Automation",
+    title: "Default Resources",
     icon: Cog,
-    key: "automation" as keyof LandingZoneConfig,
-    description: "Deployment and operational automation"
+    key: "defaultVMs" as keyof LandingZoneConfig,
+    description: "Default number of VMs and storage capacity",
+    isNumeric: true,
+    unit: "VMs"
   },
   {
-    title: "Security",
-    icon: Lock,
-    key: "security" as keyof LandingZoneConfig,
-    description: "Security services and monitoring"
+    title: "Storage Capacity",
+    icon: Network,
+    key: "defaultStorageTB" as keyof LandingZoneConfig,
+    description: "Default storage allocation",
+    isNumeric: true,
+    unit: "TB"
   },
   {
-    title: "Monitoring & Logging",
-    icon: Eye,
-    key: "monitoring" as keyof LandingZoneConfig,
-    description: "Observability and compliance logging"
+    title: "Base Infrastructure Cost",
+    icon: Building2,
+    key: "baseInfraCostPerMonth" as keyof LandingZoneConfig,
+    description: "Monthly infrastructure cost baseline",
+    isNumeric: true,
+    unit: "/month",
+    isCost: true
+  },
+  {
+    title: "Professional Services Cost",
+    icon: Shield,
+    key: "baseProfessionalServicesCost" as keyof LandingZoneConfig,
+    description: "One-time implementation cost",
+    isNumeric: true,
+    isCost: true
   }
 ];
 
@@ -88,15 +85,30 @@ export default function ConfigurationDetails({ config }: ConfigurationDetailsPro
         <div className="grid gap-3">
           {detailSections.map((section, index) => {
             const IconComponent = section.icon;
+            const value = config[section.key];
             return (
               <div key={section.key} className="space-y-2">
                 <div className="flex items-center gap-2">
                   <IconComponent className="h-4 w-4 text-primary" />
                   <h4 className="font-semibold text-sm">{section.title}</h4>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed pl-6">
-                  {config[section.key] as string}
-                </p>
+                <div className="pl-6">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {section.description}
+                  </p>
+                  {section.isNumeric ? (
+                    <div className="mt-1">
+                      <span className="font-mono text-sm font-medium">
+                        {section.isCost ? `$${Number(value).toLocaleString()}` : value}
+                        {section.unit && ` ${section.unit}`}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-sm leading-relaxed mt-1">
+                      {value as string}
+                    </p>
+                  )}
+                </div>
                 {index < detailSections.length - 1 && <Separator className="ml-6" />}
               </div>
             );

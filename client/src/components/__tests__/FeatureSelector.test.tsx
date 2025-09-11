@@ -21,10 +21,13 @@ vi.mock('@/utils/costCalculations', () => ({
   })),
   getFeaturesByCategory: vi.fn(() => ({
     foundation: [],
-    security: [],
+    "identity-access-management": [],
     networking: [],
-    automation: [],
-    monitoring: []
+    security: [],
+    monitoring: [],
+    "cost-management": [],
+    "data-management": [],
+    compliance: []
   }))
 }))
 

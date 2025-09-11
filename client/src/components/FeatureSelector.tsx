@@ -5,14 +5,14 @@ import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Feature, LandingZoneConfig, availableFeatures } from "@shared/schema";
-import { ChevronDown, Shield, Network, Cog, Eye, Building2, DollarSign, Info } from "lucide-react";
+import { ChevronDown, Shield, Network, Cog, Eye, Building2, DollarSign, Info, Users, CreditCard, Database, FileCheck } from "lucide-react";
 import { useState } from "react";
 
 /**
  * Feature Selection Component
  * 
  * Provides an interactive interface for selecting AWS Landing Zone features
- * organized by categories (foundation, security, networking, automation, monitoring).
+ * organized by categories (foundation, identity-access-management, networking, security, monitoring, cost-management, data-management, compliance).
  * Supports mandatory vs optional features with cost impact visualization.
  * 
  * Features:
@@ -38,14 +38,20 @@ const getCategoryIcon = (category: string) => {
   switch (category) {
     case "foundation":
       return <Building2 className="h-4 w-4" />;
-    case "security":
-      return <Shield className="h-4 w-4" />;
+    case "identity-access-management":
+      return <Users className="h-4 w-4" />;
     case "networking":
       return <Network className="h-4 w-4" />;
-    case "automation":
-      return <Cog className="h-4 w-4" />;
+    case "security":
+      return <Shield className="h-4 w-4" />;
     case "monitoring":
       return <Eye className="h-4 w-4" />;
+    case "cost-management":
+      return <CreditCard className="h-4 w-4" />;
+    case "data-management":
+      return <Database className="h-4 w-4" />;
+    case "compliance":
+      return <FileCheck className="h-4 w-4" />;
     default:
       return <Building2 className="h-4 w-4" />;
   }
@@ -55,14 +61,20 @@ const getCategoryColor = (category: string) => {
   switch (category) {
     case "foundation":
       return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
-    case "security":
-      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+    case "identity-access-management":
+      return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300";
     case "networking":
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-    case "automation":
-      return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
+    case "security":
+      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
     case "monitoring":
       return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300";
+    case "cost-management":
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300";
+    case "data-management":
+      return "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300";
+    case "compliance":
+      return "bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-300";
     default:
       return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
   }
@@ -71,10 +83,13 @@ const getCategoryColor = (category: string) => {
 export default function FeatureSelector({ selectedConfig, selectedFeatures, onFeatureToggle }: FeatureSelectorProps) {
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
     foundation: true,
-    security: true,
+    "identity-access-management": true,
     networking: true,
-    automation: true,
+    security: true,
     monitoring: true,
+    "cost-management": true,
+    "data-management": true,
+    compliance: true,
   });
 
   // Filter features available for this configuration size

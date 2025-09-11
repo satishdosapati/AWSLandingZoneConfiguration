@@ -570,10 +570,13 @@ export default function SummaryPage() {
 
   const categoryNames = {
     foundation: "Foundation Services",
-    security: "Security & Compliance",
+    "identity-access-management": "Identity & Access Management",
     networking: "Networking",
-    automation: "Automation & Management",
+    security: "Security & Compliance",
     monitoring: "Monitoring & Logging",
+    "cost-management": "Cost Management",
+    "data-management": "Data Management",
+    compliance: "Compliance & Governance",
   };
 
   return (
