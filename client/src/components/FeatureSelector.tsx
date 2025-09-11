@@ -136,8 +136,8 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                 </div>
               </CollapsibleTrigger>
               
-              <CollapsibleContent className="pt-3">
-                <div className="space-y-3 pl-4">
+              <CollapsibleContent className="pt-2">
+                <div className="space-y-2 pl-4">
                   {features.map((feature) => {
                     const isSelected = selectedFeatures.includes(feature.id);
                     const isMandatory = selectedConfig.mandatoryFeatures.includes(feature.id);
@@ -145,7 +145,7 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                     return (
                       <div
                         key={feature.id}
-                        className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+                        className={`flex items-start gap-2 p-2 rounded-md border transition-colors ${
                           isSelected ? 'bg-muted/50' : ''
                         }`}
                       >
@@ -157,51 +157,52 @@ export default function FeatureSelector({ selectedConfig, selectedFeatures, onFe
                           data-testid={`checkbox-feature-${feature.id}`}
                         />
                         
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="flex items-center gap-1">
-                                  <label
-                                    htmlFor={feature.id}
-                                    className="font-medium cursor-pointer hover:text-primary transition-colors"
-                                  >
-                                    {feature.name}
-                                  </label>
-                                  <Info className="h-3 w-3 text-muted-foreground" />
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-sm">
-                                <p className="text-sm">{feature.awsDefinition}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                            <Badge 
-                              variant="outline" 
-                              className={`text-xs ${getCategoryColor(feature.category)}`}
-                            >
-                              {feature.category}
-                            </Badge>
-                            {isMandatory && (
-                              <Badge variant="destructive" className="text-xs">
-                                Required
+                        <div className="flex-1 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center gap-1">
+                                    <label
+                                      htmlFor={feature.id}
+                                      className="font-medium cursor-pointer hover:text-primary transition-colors text-sm"
+                                    >
+                                      {feature.name}
+                                    </label>
+                                    <Info className="h-3 w-3 text-muted-foreground" />
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-sm">
+                                  <p className="text-sm">{feature.awsDefinition}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs ${getCategoryColor(feature.category)}`}
+                              >
+                                {feature.category}
                               </Badge>
+                              {isMandatory && (
+                                <Badge variant="destructive" className="text-xs">
+                                  Required
+                                </Badge>
+                              )}
+                            </div>
+                            {(feature.infraCostImpact > 0 || feature.professionalServicesCostImpact > 0) && (
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                {feature.infraCostImpact > 0 && (
+                                  <span>+${feature.infraCostImpact}/mo</span>
+                                )}
+                                {feature.professionalServicesCostImpact > 0 && (
+                                  <span>+${feature.professionalServicesCostImpact.toLocaleString()}</span>
+                                )}
+                              </div>
                             )}
                           </div>
                           
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs text-muted-foreground leading-tight">
                             {feature.description}
                           </p>
-                          
-                          {(feature.infraCostImpact > 0 || feature.professionalServicesCostImpact > 0) && (
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              {feature.infraCostImpact > 0 && (
-                                <span>Infrastructure: +${feature.infraCostImpact}/month</span>
-                              )}
-                              {feature.professionalServicesCostImpact > 0 && (
-                                <span>Professional Services: +${feature.professionalServicesCostImpact.toLocaleString()}</span>
-                              )}
-                            </div>
-                          )}
                         </div>
                       </div>
                     );

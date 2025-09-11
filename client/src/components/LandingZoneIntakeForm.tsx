@@ -169,14 +169,8 @@ export default function LandingZoneIntakeForm() {
                 selectedFeatures={selectedFeatures}
                 customEC2Count={customEC2Count}
                 customStorageTB={customStorageTB}
-                onEC2Change={(value) => {
-                  console.log('EC2 slider changed to:', value[0]);
-                  setCustomEC2Count(value[0]);
-                }}
-                onStorageChange={(value) => {
-                  console.log('Storage slider changed to:', value[0]);
-                  setCustomStorageTB(value[0]);
-                }}
+                onEC2Change={(value) => setCustomEC2Count(value[0])}
+                onStorageChange={(value) => setCustomStorageTB(value[0])}
               />
               
               {selectedConfiguration && (
