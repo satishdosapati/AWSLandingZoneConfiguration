@@ -5,8 +5,6 @@ export default function AppHeaderExample() {
     <div>
       <AppHeader 
         selectedConfig="medium"
-        onExportPDF={() => {}}
-        onExportCSV={() => {}}
       />
       <div className="p-6 text-center text-muted-foreground">
         Header with export options when configuration is selected

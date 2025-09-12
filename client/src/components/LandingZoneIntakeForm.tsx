@@ -115,13 +115,6 @@ export default function LandingZoneIntakeForm() {
     });
   };
 
-  const handleExportPDF = () => {
-    // PDF export functionality handled through SummaryPage
-  };
-
-  const handleExportCSV = () => {
-    // CSV export functionality handled through SummaryPage
-  };
 
   // Mutation for submitting form data to API
   const submitMutation = useMutation({
@@ -417,8 +410,6 @@ export default function LandingZoneIntakeForm() {
                 onEC2Change={(value) => setCustomEC2Count(value[0])}
                 onStorageChange={(value) => setCustomStorageTB(value[0])}
                 onSubmit={handleSubmit}
-                onExportPDF={handleExportPDF}
-                onExportCSV={handleExportCSV}
                 isSubmitting={submitMutation.isPending}
               />
               </div>

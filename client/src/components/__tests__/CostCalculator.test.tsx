@@ -5,7 +5,7 @@ import CostCalculator from '../CostCalculator'
 import { landingZoneConfigurations } from '@shared/schema'
 
 // Mock the cost calculation utility - make it dynamic based on EC2 count
-vi.mock('@/utils/costCalculations', () => ({
+vi.mock('@shared/costCalculations', () => ({
   calculateCosts: vi.fn((config, features, ec2Count, storageTB) => {
     const baseEC2Cost = ec2Count * 30; // $30 per EC2 instance
     const baseStorageCost = storageTB * 50; // $50 per TB
@@ -33,8 +33,6 @@ describe('CostCalculator', () => {
   const mockOnEC2Change = vi.fn()
   const mockOnStorageChange = vi.fn()
   const mockOnSubmit = vi.fn()
-  const mockOnExportPDF = vi.fn()
-  const mockOnExportCSV = vi.fn()
 
   const defaultProps = {
     selectedConfig: mockConfig,
@@ -44,8 +42,6 @@ describe('CostCalculator', () => {
     onEC2Change: mockOnEC2Change,
     onStorageChange: mockOnStorageChange,
     onSubmit: mockOnSubmit,
-    onExportPDF: mockOnExportPDF,
-    onExportCSV: mockOnExportCSV,
   }
 
   beforeEach(() => {
@@ -164,27 +160,7 @@ describe('CostCalculator', () => {
     expect(mockOnSubmit).toHaveBeenCalled()
   })
 
-  it('handles PDF export button click', async () => {
-    const user = userEvent.setup()
-    render(<CostCalculator {...defaultProps} />)
-    
-    const pdfButton = screen.getByTestId('button-export-pdf-form')
-    expect(pdfButton).toBeInTheDocument()
-    
-    await user.click(pdfButton)
-    expect(mockOnExportPDF).toHaveBeenCalled()
-  })
 
-  it('handles CSV export button click', async () => {
-    const user = userEvent.setup()
-    render(<CostCalculator {...defaultProps} />)
-    
-    const csvButton = screen.getByTestId('button-export-csv-form')
-    expect(csvButton).toBeInTheDocument()
-    
-    await user.click(csvButton)
-    expect(mockOnExportCSV).toHaveBeenCalled()
-  })
 
   it('calculates costs dynamically based on inputs', () => {
     // Test with different EC2 counts

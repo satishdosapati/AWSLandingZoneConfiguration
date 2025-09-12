@@ -9,7 +9,6 @@
  * - Interactive sliders for EC2 instances and storage customization
  * - Real-time cost breakdown by category (infrastructure, professional services, managed services)
  * - Form submission with validation and error handling
- * - PDF and CSV export functionality
  * - Responsive sticky positioning for mobile/desktop views
  * 
  * @version 1.0.0
@@ -21,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LandingZoneConfig, AdditionalCost } from "@shared/schema";
 import { calculateCosts } from "@shared/costCalculations";
-import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, FileText, Truck } from "lucide-react";
+import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -36,8 +35,6 @@ interface CostCalculatorProps {
   onEC2Change: (value: number[]) => void;
   onStorageChange: (value: number[]) => void;
   onSubmit: () => void;
-  onExportPDF: () => void;
-  onExportCSV: () => void;
   isSubmitting?: boolean;
 }
 
@@ -50,8 +47,6 @@ export default function CostCalculator({
   onEC2Change, 
   onStorageChange,
   onSubmit,
-  onExportPDF,
-  onExportCSV,
   isSubmitting = false
 }: CostCalculatorProps) {
   if (!selectedConfig) {
@@ -275,26 +270,6 @@ export default function CostCalculator({
             {isSubmitting ? "Submitting..." : "Submit Configuration"}
           </Button>
           
-          <div className="grid grid-cols-2 gap-1.5 w-full">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={onExportPDF}
-              data-testid="button-export-pdf-form"
-            >
-              <FileText className="h-4 w-4 mr-1" />
-              PDF
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={onExportCSV}
-              data-testid="button-export-csv-form"
-            >
-              <FileText className="h-4 w-4 mr-1" />
-              CSV
-            </Button>
-          </div>
         </CardFooter>
       </Card>
     </div>

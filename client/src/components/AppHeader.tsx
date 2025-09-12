@@ -1,16 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Cloud, Download, FileText, Moon, Sun, BarChart3 } from "lucide-react";
+import { Cloud, Moon, Sun, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useTheme } from "next-themes";
 
 interface AppHeaderProps {
   selectedConfig?: string;
-  onExportPDF?: () => void;
-  onExportCSV?: () => void;
 }
 
-export default function AppHeader({ selectedConfig, onExportPDF, onExportCSV }: AppHeaderProps) {
+export default function AppHeader({ selectedConfig }: AppHeaderProps) {
   const { theme, setTheme } = useTheme();
   const [location] = useLocation();
 
@@ -46,30 +44,6 @@ export default function AppHeader({ selectedConfig, onExportPDF, onExportCSV }: 
             </Button>
           </Link>
           
-          {selectedConfig && (
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onExportPDF}
-                className="hidden sm:flex"
-                data-testid="button-export-pdf"
-              >
-                <FileText className="h-4 w-4 mr-1" />
-                Export PDF
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onExportCSV}
-                className="hidden sm:flex"
-                data-testid="button-export-csv"
-              >
-                <Download className="h-4 w-4 mr-1" />
-                Export CSV
-              </Button>
-            </>
-          )}
           
           <Button
             variant="ghost"
