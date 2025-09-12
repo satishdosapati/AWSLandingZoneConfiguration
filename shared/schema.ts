@@ -50,9 +50,9 @@ export const costCalculationSchema = z.object({
 
 // Presales Engineer Information Schema
 export const presalesInfoSchema = z.object({
-  presalesEngineerEmail: z.string().email("Please enter a valid email address"),
-  partnerName: z.string().min(1, "Partner name is required"),
-  endCustomerName: z.string().min(1, "End customer name is required"),
+  presalesEngineerEmail: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
+  partnerName: z.string().optional(),
+  endCustomerName: z.string().optional(),
   awsReferenceIds: z.string().optional(), // Optional field for multiple AWS reference IDs
 });
 

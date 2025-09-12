@@ -250,7 +250,7 @@ export default function LandingZoneIntakeForm() {
                     name="presalesEngineerEmail"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Presales Engineer Email *</FormLabel>
+                        <FormLabel>Presales Engineer Email</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="engineer@partner.com"
@@ -267,7 +267,7 @@ export default function LandingZoneIntakeForm() {
                     name="partnerName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Partner Name *</FormLabel>
+                        <FormLabel>Partner Name</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Consulting Partner Name"
@@ -286,7 +286,7 @@ export default function LandingZoneIntakeForm() {
                     name="endCustomerName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>End Customer Name *</FormLabel>
+                        <FormLabel>End Customer Name</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Customer Organization Name"
@@ -303,7 +303,7 @@ export default function LandingZoneIntakeForm() {
                     name="awsReferenceIds"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>AWS Reference IDs (Optional)</FormLabel>
+                        <FormLabel>AWS Reference IDs</FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Enter AWS Account IDs, Case Numbers, or other reference identifiers (one per line)"
