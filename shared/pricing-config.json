@@ -24,7 +24,7 @@
       "managedServicesCostPerTBStorage": 35
     },
     "large": {
-      "baseInfraCostPerMonth": 18000,
+      "baseInfraCostPerMonth": 5600,
       "baseProfessionalServicesCost": 25000,
       "managedServicesCostPerEC2": 110,
       "managedServicesCostPerTBStorage": 40
