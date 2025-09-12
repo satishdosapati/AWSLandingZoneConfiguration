@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature, AdditionalCost } from "@shared/schema";
 import { calculateCosts, CostBreakdown } from "@shared/costCalculations";
 import { getPricingVersion } from "@shared/pricing-loader";
-import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User, DollarSign } from "lucide-react";
+import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User, DollarSign, Truck } from "lucide-react";
 
 interface SummaryData {
   configSize: string;
@@ -925,6 +925,27 @@ export default function SummaryPage() {
                         <span>Total</span>
                         <span className="text-green-700 dark:text-green-300" data-testid="text-summary-professional">
                           ${costs.totalProfessionalServicesCost.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Migration Costs */}
+                  <div className="bg-orange-50 dark:bg-orange-950/20 p-3 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Truck className="h-4 w-4 text-orange-600" />
+                      <h4 className="font-semibold text-sm">Migration Costs (One-time)</h4>
+                    </div>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">VM Migration ({costs.migrationVMCount} instances)</span>
+                        <span>${costs.migrationCostPerVM}/VM</span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between font-semibold">
+                        <span>Total</span>
+                        <span className="text-orange-700 dark:text-orange-300" data-testid="text-summary-migration">
+                          ${costs.migrationCost.toLocaleString()}
                         </span>
                       </div>
                     </div>
