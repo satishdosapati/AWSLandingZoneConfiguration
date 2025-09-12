@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LandingZoneConfig, AdditionalCost } from "@shared/schema";
 import { calculateCosts } from "@shared/costCalculations";
-import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, FileText } from "lucide-react";
+import { Calculator, DollarSign, Server, HardDrive, Building, Wrench, Settings, CheckCircle, FileText, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -198,7 +198,28 @@ export default function CostCalculator({
             </div>
           </div>
 
-          {/* 3. Managed Services (Monthly) */}
+          {/* 3. Migration Costs (One-time) */}
+          <div className="bg-orange-50 dark:bg-orange-950/20 p-3 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Truck className="h-4 w-4 text-orange-600" />
+              <h4 className="font-semibold text-sm text-orange-900 dark:text-orange-100">Migration Costs (One-time)</h4>
+            </div>
+            <div className="space-y-1.5 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">VM Migration ({costs.migrationVMCount} instances)</span>
+                <span className="font-mono">${costs.migrationCostPerVM}/VM × {costs.migrationVMCount}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between font-semibold">
+                <span>Total Migration Cost</span>
+                <span className="font-mono text-orange-700 dark:text-orange-300" data-testid="text-total-migration">
+                  ${costs.migrationCost.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. Managed Services (Monthly) */}
           <div className="bg-purple-50 dark:bg-purple-950/20 p-3 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Settings className="h-4 w-4 text-purple-600" />

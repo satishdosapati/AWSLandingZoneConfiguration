@@ -453,6 +453,19 @@ const ConfigurationPDFDocument = ({
             </View>
           </View>
 
+          {/* Migration Costs */}
+          <View style={pdfStyles.costSection}>
+            <Text style={pdfStyles.costTitle}>Migration Costs (One-time)</Text>
+            <View style={pdfStyles.costRow}>
+              <Text style={pdfStyles.costLabel}>VM Migration ({costs.migrationVMCount} instances)</Text>
+              <Text style={pdfStyles.costValue}>${costs.migrationCostPerVM}/VM × {costs.migrationVMCount}</Text>
+            </View>
+            <View style={pdfStyles.totalRow}>
+              <Text style={pdfStyles.totalLabel}>Total Migration Cost</Text>
+              <Text style={pdfStyles.totalValue}>${costs.migrationCost.toLocaleString()}</Text>
+            </View>
+          </View>
+
           {/* Managed Services */}
           <View style={pdfStyles.costSection}>
             <Text style={pdfStyles.costTitle}>Managed Services (Monthly)</Text>
