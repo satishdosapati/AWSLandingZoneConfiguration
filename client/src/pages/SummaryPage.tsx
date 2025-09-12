@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature, AdditionalCost } from "@shared/schema";
 import { calculateCosts, CostBreakdown } from "@shared/costCalculations";
 import { getPricingVersion } from "@shared/pricing-loader";
-import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User } from "lucide-react";
+import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User, DollarSign } from "lucide-react";
 
 interface SummaryData {
   configSize: string;
