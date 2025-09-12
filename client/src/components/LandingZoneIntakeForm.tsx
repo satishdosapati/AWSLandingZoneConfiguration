@@ -49,6 +49,10 @@ export default function LandingZoneIntakeForm() {
   const [customEC2Count, setCustomEC2Count] = useState<number>(1);
   const [customStorageTB, setCustomStorageTB] = useState<number>(1);
   const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([]);
+  // Cost inclusion toggles
+  const [includeProfessionalServices, setIncludeProfessionalServices] = useState<boolean>(true);
+  const [includeMigrationCosts, setIncludeMigrationCosts] = useState<boolean>(true);
+  const [includeManagedServices, setIncludeManagedServices] = useState<boolean>(true);
   const { toast } = useToast();
   
   // Enhanced metrics tracking

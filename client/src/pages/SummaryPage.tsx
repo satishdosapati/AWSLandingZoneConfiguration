@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { landingZoneConfigurations, availableFeatures, LandingZoneConfig, Feature, AdditionalCost } from "@shared/schema";
 import { calculateCosts, CostBreakdown } from "@shared/costCalculations";
 import { getPricingVersion } from "@shared/pricing-loader";
-import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User, DollarSign, Truck } from "lucide-react";
+import { ArrowLeft, Download, FileText, CheckCircle, AlertCircle, Building, Wrench, Settings, Server, HardDrive, User, DollarSign, Truck, FileSpreadsheet } from "lucide-react";
 
 interface SummaryData {
   configSize: string;
@@ -22,6 +22,107 @@ interface SummaryData {
   customerName?: string;
   awsReferenceIds?: string;
 }
+
+// CSV Export Function
+const exportToCSV = (
+  config: LandingZoneConfig, 
+  selectedFeatureObjects: Feature[], 
+  costs: CostBreakdown,
+  customEC2Count: number,
+  customStorageTB: number,
+  additionalCosts: AdditionalCost[],
+  presalesData: {
+    presalesEngineerEmail?: string;
+    partnerName?: string;
+    customerName?: string;
+    awsReferenceIds?: string;
+  }
+) => {
+  const pricingInfo = getPricingVersion();
+  const currentDate = new Date().toLocaleDateString();
+  
+  // Create CSV content
+  let csvContent = "AWS Landing Zone Configuration Summary\n";
+  csvContent += `Generated on,${currentDate}\n`;
+  csvContent += `Pricing Version,${pricingInfo.version}\n`;
+  csvContent += `Last Updated,${pricingInfo.lastUpdated}\n`;
+  csvContent += "\n";
+  
+  // Presales Information
+  if (presalesData.presalesEngineerEmail || presalesData.partnerName || presalesData.customerName || presalesData.awsReferenceIds) {
+    csvContent += "PRESALES INFORMATION\n";
+    if (presalesData.presalesEngineerEmail) csvContent += `Presales Engineer,${presalesData.presalesEngineerEmail}\n`;
+    if (presalesData.partnerName) csvContent += `Partner Organization,${presalesData.partnerName}\n`;
+    if (presalesData.customerName) csvContent += `End Customer,${presalesData.customerName}\n`;
+    if (presalesData.awsReferenceIds) csvContent += `AWS Reference IDs,${presalesData.awsReferenceIds}\n`;
+    csvContent += "\n";
+  }
+  
+  // Configuration Details
+  csvContent += "CONFIGURATION DETAILS\n";
+  csvContent += `Configuration Size,${config.size.toUpperCase()}\n`;
+  csvContent += `Base Infrastructure Cost,$${config.baseInfraCostPerMonth.toLocaleString()}/month\n`;
+  csvContent += `Base Professional Services,$${config.baseProfessionalServicesCost.toLocaleString()}\n`;
+  csvContent += `EC2 Instances,${customEC2Count}\n`;
+  csvContent += `Storage (TB),${customStorageTB}\n`;
+  csvContent += "\n";
+  
+  // Selected Features
+  if (selectedFeatureObjects.length > 0) {
+    csvContent += "SELECTED FEATURES\n";
+    csvContent += "Feature Name,Category,Infrastructure Impact,Professional Services Impact\n";
+    selectedFeatureObjects.forEach(feature => {
+      csvContent += `${feature.name},${feature.category},$${feature.infraCostImpact.toLocaleString()},$${feature.professionalServicesCostImpact.toLocaleString()}\n`;
+    });
+    csvContent += "\n";
+  }
+  
+  // Additional Costs
+  if (additionalCosts.length > 0) {
+    csvContent += "ADDITIONAL COSTS\n";
+    csvContent += "Description,Amount\n";
+    additionalCosts.forEach(cost => {
+      csvContent += `${cost.description},$${cost.amount.toLocaleString()}\n`;
+    });
+    csvContent += "\n";
+  }
+  
+  // Cost Breakdown
+  csvContent += "COST BREAKDOWN\n";
+  csvContent += "Category,Cost Type,Amount\n";
+  csvContent += `Infrastructure Base,Monthly,$${costs.baseInfrastructureCost.toLocaleString()}\n`;
+  csvContent += `Infrastructure Features,Monthly,$${costs.featuresInfrastructureCost.toLocaleString()}\n`;
+  csvContent += `Infrastructure Total,Monthly,$${costs.totalInfrastructureCost.toLocaleString()}\n`;
+  csvContent += `Professional Services Base,One-time,$${costs.baseProfessionalServicesCost.toLocaleString()}\n`;
+  csvContent += `Professional Services Features,One-time,$${costs.featuresProfessionalServicesCost.toLocaleString()}\n`;
+  if (costs.additionalCostsTotal > 0) {
+    csvContent += `Professional Services Additional,One-time,$${costs.additionalCostsTotal.toLocaleString()}\n`;
+  }
+  csvContent += `Professional Services Total,One-time,$${costs.totalProfessionalServicesCost.toLocaleString()}\n`;
+  csvContent += `Migration Costs,One-time,$${costs.migrationCost.toLocaleString()}\n`;
+  csvContent += `Managed Services EC2,Monthly,$${costs.managedServicesEC2Cost.toLocaleString()}\n`;
+  csvContent += `Managed Services Storage,Monthly,$${costs.managedServicesStorageCost.toLocaleString()}\n`;
+  csvContent += `Managed Services Total,Monthly,$${costs.totalManagedServicesCost.toLocaleString()}\n`;
+  csvContent += "\n";
+  
+  // Totals
+  csvContent += "SUMMARY TOTALS\n";
+  csvContent += `Total Monthly Cost,$${costs.totalMonthlyCost.toLocaleString()}\n`;
+  csvContent += `First Year Total,$${costs.totalFirstYearCost.toLocaleString()}\n`;
+  
+  // Create and download file
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `aws-landing-zone-${config.size}-configuration.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+};
 
 // PDF Styles for professional Ingram Micro letterhead
 const pdfStyles = StyleSheet.create({
@@ -458,7 +559,7 @@ const ConfigurationPDFDocument = ({
             <Text style={pdfStyles.costTitle}>Migration Costs (One-time)</Text>
             <View style={pdfStyles.costRow}>
               <Text style={pdfStyles.costLabel}>VM Migration ({costs.migrationVMCount} instances)</Text>
-              <Text style={pdfStyles.costValue}>${costs.migrationCostPerVM}/VM × {costs.migrationVMCount}</Text>
+              <Text style={pdfStyles.costValue}>${costs.migrationCost.toLocaleString()}</Text>
             </View>
             <View style={pdfStyles.totalRow}>
               <Text style={pdfStyles.totalLabel}>Total Migration Cost</Text>
@@ -668,6 +769,28 @@ export default function SummaryPage() {
                   </Button>
                 )}
               </PDFDownloadLink>
+              
+              <Button 
+                onClick={() => exportToCSV(
+                  config,
+                  selectedFeatureObjects,
+                  costs,
+                  summaryData.customEC2Count,
+                  summaryData.customStorageTB,
+                  additionalCosts,
+                  {
+                    presalesEngineerEmail: summaryData.presalesEngineerEmail,
+                    partnerName: summaryData.partnerName,
+                    customerName: summaryData.customerName,
+                    awsReferenceIds: summaryData.awsReferenceIds,
+                  }
+                )}
+                variant="outline"
+                data-testid="button-download-csv"
+              >
+                <FileSpreadsheet className="h-4 w-4 mr-2" />
+                Download CSV
+              </Button>
               
               <Link href="/">
                 <Button variant="outline" data-testid="button-back-to-form">
@@ -939,7 +1062,7 @@ export default function SummaryPage() {
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">VM Migration ({costs.migrationVMCount} instances)</span>
-                        <span>${costs.migrationCostPerVM}/VM</span>
+                        <span>${costs.migrationCost.toLocaleString()}</span>
                       </div>
                       <Separator />
                       <div className="flex justify-between font-semibold">

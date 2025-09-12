@@ -207,7 +207,7 @@ export default function CostCalculator({
             <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">VM Migration ({costs.migrationVMCount} instances)</span>
-                <span className="font-mono">${costs.migrationCostPerVM}/VM × {costs.migrationVMCount}</span>
+                <span className="font-mono">${costs.migrationCost.toLocaleString()}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">
