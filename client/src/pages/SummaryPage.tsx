@@ -28,14 +28,14 @@ const pdfStyles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: 40,
+    padding: 25,
     fontFamily: 'Helvetica',
-    lineHeight: 1.4,
+    lineHeight: 1.3,
   },
   header: {
-    marginBottom: 30,
+    marginBottom: 20,
     borderBottom: '2px solid #1B4B8C',
-    paddingBottom: 20,
+    paddingBottom: 15,
   },
   companyName: {
     fontSize: 24,
@@ -59,39 +59,39 @@ const pdfStyles = StyleSheet.create({
     color: '#6B7280',
   },
   section: {
-    marginBottom: 25,
+    marginBottom: 15,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1B4B8C',
-    marginBottom: 12,
+    marginBottom: 8,
     borderBottom: '1px solid #E5E7EB',
-    paddingBottom: 6,
+    paddingBottom: 4,
   },
   configCard: {
     backgroundColor: '#F8FAFC',
     border: '1px solid #E2E8F0',
     borderRadius: 8,
-    padding: 18,
-    marginBottom: 18,
+    padding: 12,
+    marginBottom: 12,
   },
   configName: {
     fontSize: 15,
     fontWeight: 'bold',
     color: '#1F2937',
-    marginBottom: 8,
+    marginBottom: 5,
     lineHeight: 1.3,
   },
   configDescription: {
     fontSize: 12,
     color: '#6B7280',
-    marginBottom: 12,
+    marginBottom: 8,
     lineHeight: 1.4,
   },
   // New styles for better text layout
   resourceContainer: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
   resourceLabel: {
     fontSize: 11,
@@ -108,8 +108,8 @@ const pdfStyles = StyleSheet.create({
   },
   // Improved layout for structured data
   structureSection: {
-    marginBottom: 12,
-    paddingBottom: 8,
+    marginBottom: 8,
+    paddingBottom: 6,
     borderBottom: '1px solid #E5E7EB',
   },
   structureLabel: {
@@ -145,8 +145,8 @@ const pdfStyles = StyleSheet.create({
     textAlign: 'right',
   },
   featureItem: {
-    marginBottom: 10,
-    padding: 12,
+    marginBottom: 6,
+    padding: 8,
     backgroundColor: '#F0F9FF',
     borderLeft: '3px solid #0EA5E9',
     borderRadius: 4,
@@ -168,14 +168,14 @@ const pdfStyles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     border: '1px solid #E2E8F0',
     borderRadius: 8,
-    padding: 18,
-    marginBottom: 18,
+    padding: 12,
+    marginBottom: 12,
   },
   costTitle: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#1B4B8C',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   costRow: {
     flexDirection: 'row',
@@ -199,8 +199,8 @@ const pdfStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderTop: '1px solid #D1D5DB',
-    paddingTop: 10,
-    marginTop: 10,
+    paddingTop: 8,
+    marginTop: 8,
     alignItems: 'center',
   },
   totalLabel: {
@@ -221,14 +221,14 @@ const pdfStyles = StyleSheet.create({
     backgroundColor: '#EBF5FF',
     border: '2px solid #1B4B8C',
     borderRadius: 8,
-    padding: 20,
-    marginBottom: 25,
+    padding: 15,
+    marginBottom: 15,
   },
   presalesTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1B4B8C',
-    marginBottom: 15,
+    marginBottom: 10,
     textAlign: 'center',
   },
   presalesGrid: {
