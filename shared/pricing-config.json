@@ -7,25 +7,25 @@
   "basePricing": {
     "very-small": {
       "baseInfraCostPerMonth": 141,
-      "baseProfessionalServicesCost": 15000,
+      "baseProfessionalServicesCost": 5000,
       "managedServicesCostPerEC2": 75,
       "managedServicesCostPerTBStorage": 25
     },
     "small": {
       "baseInfraCostPerMonth": 886,
-      "baseProfessionalServicesCost": 35000,
+      "baseProfessionalServicesCost": 10000,
       "managedServicesCostPerEC2": 85,
       "managedServicesCostPerTBStorage": 30
     },
     "medium": {
       "baseInfraCostPerMonth": 3700,
-      "baseProfessionalServicesCost": 75000,
+      "baseProfessionalServicesCost": 20000,
       "managedServicesCostPerEC2": 95,
       "managedServicesCostPerTBStorage": 35
     },
     "large": {
       "baseInfraCostPerMonth": 18000,
-      "baseProfessionalServicesCost": 150000,
+      "baseProfessionalServicesCost": 25000,
       "managedServicesCostPerEC2": 110,
       "managedServicesCostPerTBStorage": 40
     }
