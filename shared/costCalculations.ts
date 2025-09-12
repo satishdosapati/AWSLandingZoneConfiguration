@@ -9,6 +9,7 @@
  */
 
 import { LandingZoneConfig, Feature, availableFeatures, AdditionalCost } from "./schema";
+import { getMigrationPricing } from "./pricing-loader";
 
 /**
  * Comprehensive cost breakdown interface for AWS Landing Zone configurations
@@ -25,6 +26,11 @@ export interface CostBreakdown {
   featuresProfessionalServicesCost: number;
   additionalCostsTotal: number;
   totalProfessionalServicesCost: number;
+  
+  // Migration costs (one-time)
+  migrationCost: number;
+  migrationCostPerVM: number;
+  migrationVMCount: number;
   
   // Managed services costs (monthly)
   managedServicesEC2Cost: number;
@@ -80,6 +86,12 @@ export function calculateCosts(
   const additionalCostsTotal = additionalCosts.reduce((sum, cost) => sum + cost.amount, 0);
   const totalProfessionalServicesCost = baseProfessionalServicesCost + featuresProfessionalServicesCost + additionalCostsTotal;
 
+  // Calculate migration costs (one-time)
+  const migrationPricing = getMigrationPricing();
+  const migrationCostPerVM = migrationPricing.costPerVM;
+  const migrationVMCount = ec2Count; // Use same number as EC2 instances
+  const migrationCost = migrationVMCount * migrationCostPerVM;
+
   // Calculate managed services costs (monthly)
   const managedServicesEC2Cost = ec2Count * config.managedServicesCostPerEC2;
   const managedServicesStorageCost = storageTB * config.managedServicesCostPerTBStorage;
@@ -87,7 +99,7 @@ export function calculateCosts(
 
   // Calculate grand totals
   const totalMonthlyCost = totalInfrastructureCost + totalManagedServicesCost;
-  const totalFirstYearCost = (totalMonthlyCost * 12) + totalProfessionalServicesCost;
+  const totalFirstYearCost = (totalMonthlyCost * 12) + totalProfessionalServicesCost + migrationCost;
 
   return {
     baseInfrastructureCost,
@@ -97,6 +109,9 @@ export function calculateCosts(
     featuresProfessionalServicesCost,
     additionalCostsTotal,
     totalProfessionalServicesCost,
+    migrationCost,
+    migrationCostPerVM,
+    migrationVMCount,
     managedServicesEC2Cost,
     managedServicesStorageCost,
     totalManagedServicesCost,

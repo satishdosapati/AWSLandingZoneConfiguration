@@ -19,6 +19,10 @@ export interface PricingConfig {
       professionalServicesCostImpact: number;
     };
   };
+  migrationPricing: {
+    costPerVM: number;
+    description: string;
+  };
   pricingNotes: {
     [key: string]: string | {
       [key: string]: string;
@@ -36,6 +40,10 @@ export const getBasePricing = (size: string) => {
 
 export const getFeaturePricing = (featureId: string) => {
   return pricing.featurePricing[featureId] || { infraCostImpact: 0, professionalServicesCostImpact: 0 };
+};
+
+export const getMigrationPricing = () => {
+  return pricing.migrationPricing || { costPerVM: 300, description: "One-time migration cost per VM" };
 };
 
 export const getPricingVersion = () => {
