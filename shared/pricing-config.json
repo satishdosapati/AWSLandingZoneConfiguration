@@ -148,6 +148,12 @@
       "large": "100x mixed instances (~$140 each) + 50TB storage ($4000) = $18000/month"
     }
   },
+
+  "migrationPricing": {
+    "costPerVM": 300,
+    "description": "One-time migration cost per VM/EC2 instance - covers assessment, planning, and execution of migration to AWS Landing Zone environment",
+    "_comment": "This cost includes migration assessment, dependency mapping, cutover planning, and post-migration validation per instance"
+  },
   
   "awsPricingReference": {
     "region": "us-east-2",
