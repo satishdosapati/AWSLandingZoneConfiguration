@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-15",
+  "description": "Mapping of AWS Price List API offer codes to our feature IDs",
+  "mappings": [
+    {
+      "featureId": "aws-organizations",
+      "awsOfferCode": "AWSOrganizations",
+      "awsServiceName": "AWS Organizations",
+      "notes": "Usually free or bundled pricing"
+    },
+    {
+      "featureId": "control-tower",
+      "awsOfferCode": "AWSControlTower",
+      "awsServiceName": "AWS Control Tower",
+      "notes": "No charge for Control Tower itself, only underlying services"
+    },
+    {
+      "featureId": "guardduty",
+      "awsOfferCode": "AmazonGuardDuty",
+      "awsServiceName": "Amazon GuardDuty",
+      "notes": "Charged per GB of VPC Flow Logs, DNS Logs, S3 Logs, etc."
+    },
+    {
+      "featureId": "security-hub",
+      "awsOfferCode": "AWSSecurityHub",
+      "awsServiceName": "AWS Security Hub",
+      "notes": "Charged per security check monthly"
+    },
+    {
+      "featureId": "inspector",
+      "awsOfferCode": "AmazonInspector",
+      "awsServiceName": "Amazon Inspector",
+      "notes": "Charged per scan or per EC2 instance-hour"
+    },
+    {
+      "featureId": "macie",
+      "awsOfferCode": "AmazonMacie",
+      "awsServiceName": "Amazon Macie",
+      "notes": "Charged per GB of data scanned"
+    },
+    {
+      "featureId": "cloudtrail",
+      "awsOfferCode": "CloudTrail",
+      "awsServiceName": "AWS CloudTrail",
+      "notes": "First 250,000 events free, then charged per event"
+    },
+    {
+      "featureId": "cloudwatch",
+      "awsOfferCode": "AmazonCloudWatch",
+      "awsServiceName": "Amazon CloudWatch",
+      "notes": "Pricing varies by metric, log, and alarm usage"
+    },
+    {
+      "featureId": "transit-gateway",
+      "awsOfferCode": "AmazonTransitGateway",
+      "awsServiceName": "AWS Transit Gateway",
+      "notes": "Charged per attachment and per GB data processed"
+    },
+    {
+      "featureId": "network-firewall",
+      "awsOfferCode": "AWSNetworkFirewall",
+      "awsServiceName": "AWS Network Firewall",
+      "notes": "Charged per hour of firewall and per GB processed"
+    },
+    {
+      "featureId": "direct-connect",
+      "awsOfferCode": "AWSDataTransfer",
+      "awsServiceName": "AWS Direct Connect",
+      "notes": "Charged per port and per GB data transfer"
+    },
+    {
+      "featureId": "opensearch-logging",
+      "awsOfferCode": "AmazonES",
+      "awsServiceName": "Amazon OpenSearch Service",
+      "notes": "Charged per instance-hour and storage"
+    },
+    {
+      "featureId": "budgets",
+      "awsOfferCode": "AWSBudgets",
+      "awsServiceName": "AWS Budgets",
+      "notes": "First two budgets free, then charged per budget"
+    },
+    {
+      "featureId": "cost-explorer",
+      "awsOfferCode": "AWSCostExplorer",
+      "awsServiceName": "AWS Cost Explorer",
+      "notes": "Free for basic usage, charges apply for detailed reports"
+    },
+    {
+      "featureId": "backup",
+      "awsOfferCode": "AWSBackup",
+      "awsServiceName": "AWS Backup",
+      "notes": "Charged per GB of backup storage"
+    },
+    {
+      "featureId": "audit-manager",
+      "awsOfferCode": "auditmanager",
+      "awsServiceName": "AWS Audit Manager",
+      "notes": "Charged per evidence item"
+    }
+  ],
+  "serviceDefaults": {
+    "AmazonVPC": {
+      "featureIds": ["vpn-connectivity"],
+      "notes": "VPN Connection pricing"
+    },
+    "IAM": {
+      "featureIds": ["iam-basic"],
+      "notes": "IAM is free"
+    },
+    "AWSSSO": {
+      "featureIds": ["iam-identity-center"],
+      "notes": "AWS IAM Identity Center pricing"
+    }
+  }
+}
+

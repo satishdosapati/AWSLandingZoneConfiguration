@@ -4,6 +4,7 @@ import { createServer, type Server } from "http";
 import { storage, type SubmissionFilters } from "./storage";
 import { insertLandingZoneSubmissionSchema, landingZoneConfigurations } from "@shared/schema";
 import { calculateCosts } from "@shared/costCalculations";
+import { buildAWSPricingCache, isAWSPricingCacheValid } from "@shared/aws-pricing-loader";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -205,6 +206,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ 
         error: 'Internal server error while retrieving submission' 
+      });
+    }
+  });
+
+  // POST /api/pricing/refresh - Refresh AWS pricing cache
+  app.post('/api/pricing/refresh', async (req, res) => {
+    try {
+      const region = req.query.region as string || 'us-east-2';
+      const forceRefresh = req.query.force === 'true';
+      
+      console.log('[PRICING] Refreshing AWS pricing cache', { region, forceRefresh });
+      
+      const cache = await buildAWSPricingCache(region, forceRefresh);
+      
+      res.json({
+        success: true,
+        message: 'Pricing cache refreshed successfully',
+        cache: {
+          lastUpdated: cache.lastUpdated.toISOString(),
+          publicationDate: cache.publicationDate,
+          featuresCount: Object.keys(cache.featurePricing).length
+        }
+      });
+      
+    } catch (error) {
+      console.error('[PRICING] Failed to refresh cache:', error);
+      res.status(500).json({ 
+        error: 'Failed to refresh pricing cache',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/pricing/status - Check pricing cache status
+  app.get('/api/pricing/status', async (req, res) => {
+    try {
+      const isValid = isAWSPricingCacheValid();
+      
+      res.json({
+        success: true,
+        isValid,
+        message: isValid 
+          ? 'Pricing cache is valid' 
+          : 'Pricing cache is expired or not initialized'
+      });
+      
+    } catch (error) {
+      res.status(500).json({ 
+        error: 'Internal server error while checking pricing status' 
       });
     }
   });
